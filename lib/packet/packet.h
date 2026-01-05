@@ -34,9 +34,9 @@ struct monitoringData {
 
 class packet {
     public:
-    void safetyPacket(uint8_t packetID, uint8_t ID, uint8_t deviceType, float latitude, float longitude, uint8_t *returnPacket);
-    void monitoringPacket(uint8_t packetID, uint8_t ID, uint8_t deviceType, float latitude, float longitude, uint8_t batteryLevel, float last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket);
-    void decodePacket(uint8_t *receivedPacket);
+    void safetyPacket(uint8_t packetID, uint8_t ID, uint8_t deviceType, float latitude, float longitude, unsigned char *returnPacket);
+    void monitoringPacket(uint8_t packetID, uint8_t ID, uint8_t deviceType, float latitude, float longitude, uint8_t batteryLevel, float last5positions[5][2], uint8_t last5events[5], uint8_t status, unsigned char *returnPacket);
+    void decodePacket(unsigned char *receivedPacket);
 
     safetyData safetyPacketData;
     monitoringData monitoringPacketData;
