@@ -42,6 +42,7 @@ void packet::decodePacket(uint8_t *receivedPacket) {
     memccpy(&longitude, &receivedPacket[7], 0, sizeof(float));
 
     if (packetID == SAFETY_PACKET) {
+        Serial.println("Decoding Safety Packet...");
         safetyPacketData.packetID = packetID;
         safetyPacketData.ID = ID;
         safetyPacketData.deviceType = deviceType;
@@ -49,6 +50,7 @@ void packet::decodePacket(uint8_t *receivedPacket) {
         safetyPacketData.longitude = longitude;
 
     } else if (packetID == MONITORING_PACKET) {
+        Serial.println("Decoding Monitoring Packet...");
         uint8_t batteryLevel = receivedPacket[11];
         float last5positions[5][2];
         uint8_t last5events[5];

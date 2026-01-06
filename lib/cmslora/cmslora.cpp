@@ -1,7 +1,7 @@
 #include "cmslora.h"
-#include "lorapacket.h"
-LoRaPacket pack;
-ReceivedData rd;
+// #include "lorapacket.h"
+// LoRaPacket pack;
+// ReceivedData rd;
 volatile bool CMSLoRa::sendDone = false;
 volatile bool CMSLoRa::receiveDone = false;
 //Callback chama automaticamente quando o envio é concluido
@@ -117,4 +117,5 @@ bool CMSLoRa::isChannelBusy()
   {
     return false;
   }
+  return true;
 }
