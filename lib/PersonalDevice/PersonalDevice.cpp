@@ -86,6 +86,6 @@ void PersonalDevice::updateFromBluetooth(String rawData) {
         setLatitude(novaLat);
         setLongitude(novaLng);
         
-        Serial.println(">>> Dados atualizados via BLE.");
+        Serial.println("\n>>> Dados atualizados via BLE.");
     }
 }
