@@ -50,6 +50,13 @@ bool VehicleDevice::receive() {
     lora.SpreadingFactor(7);
     if(lora.receiveData(receivedPacket, MONITORING_PACKET_SIZE)) {
     pckt.decodePacket(receivedPacket);
+    Serial.println("Received Packet:");
+    Serial.print("ID: ");
+    Serial.println(pckt.monitoringPacketData.ID);
+    Serial.print("Latitude: ");
+    Serial.println(pckt.monitoringPacketData.latitude, 6);
+    Serial.print("Longitude: ");
+    Serial.println(pckt.monitoringPacketData.longitude, 6);
     return true;
     }
     return false;
