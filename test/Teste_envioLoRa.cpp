@@ -10,7 +10,7 @@ void setup()
 {
     Serial.begin(9600);
     lora.begin();
-    pckt.safetyPacket(1, 1, PERSONAL_DEVICE, 37.7749, -122.4194, safetyPacket);
+    pckt.safetyPacket(1, PERSONAL_DEVICE, 37.7749, -122.4194, safetyPacket);
 }
 void loop()
 {

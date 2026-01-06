@@ -1,7 +1,7 @@
 #include "packet.h"
 
-void packet::safetyPacket(uint8_t packetID, uint8_t ID, uint8_t deviceType, float latitude, float longitude, unsigned char *returnPacket) {
-    returnPacket[0] = packetID;
+void packet::safetyPacket(uint8_t ID, uint8_t deviceType, float latitude, float longitude, uint8_t *returnPacket) {
+    returnPacket[0] = SAFETY_PACKET;
     returnPacket[1] = ID;
     returnPacket[2] = deviceType;
 
@@ -9,8 +9,8 @@ void packet::safetyPacket(uint8_t packetID, uint8_t ID, uint8_t deviceType, floa
     memccpy(&returnPacket[7], &longitude, 0, sizeof(float));
 }
 
-void packet::monitoringPacket(uint8_t packetID, uint8_t ID, uint8_t deviceType, float latitude, float longitude, uint8_t batteryLevel, float last5positions[5][2], uint8_t last5events[5], uint8_t status, unsigned char *returnPacket) {
-    returnPacket[0] = packetID;
+void packet::monitoringPacket(uint8_t ID, uint8_t deviceType, float latitude, float longitude, uint8_t batteryLevel, float last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket) {
+    returnPacket[0] = MONITORING_PACKET;
     returnPacket[1] = ID;
     returnPacket[2] = deviceType;
 
@@ -30,7 +30,7 @@ void packet::monitoringPacket(uint8_t packetID, uint8_t ID, uint8_t deviceType, 
     returnPacket[57] = status;
 }
 
-void packet::decodePacket(unsigned char *receivedPacket) {
+void packet::decodePacket(uint8_t *receivedPacket) {
     uint8_t packetID = receivedPacket[0];
     uint8_t ID = receivedPacket[1];
     uint8_t deviceType = receivedPacket[2];
