@@ -71,3 +71,21 @@ bool PersonalDevice::isChannelBusy(int channel) {
     }
     return lora.isChannelBusy();
 }
+void PersonalDevice::updateFromBluetooth(String rawData) {
+    int firstSemi = rawData.indexOf(';');
+    int secondSemi = rawData.indexOf(';', firstSemi + 1);
+
+    if (firstSemi != -1 && secondSemi != -1) {
+        // Extrai os valores usando as funções existentes
+        uint8_t novoID = (uint8_t)rawData.substring(0, firstSemi).toInt();
+        float novaLat = rawData.substring(firstSemi + 1, secondSemi).toFloat();
+        float novaLng = rawData.substring(secondSemi + 1).toFloat();
+
+        // Usa os setters que você já tem
+        setID(novoID);
+        setLatitude(novaLat);
+        setLongitude(novaLng);
+        
+        Serial.println(">>> Dados atualizados via BLE.");
+    }
+}

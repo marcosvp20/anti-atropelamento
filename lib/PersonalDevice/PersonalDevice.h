@@ -8,6 +8,9 @@
 #define MONITORING_CHANNEL 1
 #define SAFETY_CHANNEL 2
 
+#define CONFIG_SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define CONFIG_CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+
 class PersonalDevice {
   public:
     PersonalDevice();
@@ -34,6 +37,8 @@ class PersonalDevice {
     bool receive();
 
     bool isChannelBusy(int channel);
+
+    void updateFromBluetooth(String rawData);
 
   private:
     uint8_t deviceID;
