@@ -49,7 +49,7 @@ void VehicleDevice::sendMonitoring() {
 bool VehicleDevice::receive() {
 
     lora.SpreadingFactor(7);
-    if(lora.receiveData(receivedPacket, MONITORING_PACKET_SIZE)) {
+    if(lora.receiveData(receivedPacket, MONITORING_PACKET_SIZE, 1000)) {
     pckt.decodePacket(receivedPacket);
     Serial.println("Received Packet:");
     Serial.print("ID: ");

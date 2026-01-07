@@ -20,10 +20,8 @@ void loop() {
     {
         Serial.println("Sending Safety Packet...");
         device.sendSafety();
-        delay(5000);
     }
     if(i == 5) {
-        Serial.println("Sending Monitoring Packet...");
         if(device.isChannelBusy(MONITORING_CHANNEL))
         {
             Serial.println("Channel is busy, waiting... a random time");
@@ -31,18 +29,12 @@ void loop() {
         }
         else
         {
+            Serial.println("Sending Monitoring Packet...");
             device.sendMonitoring();
             i = 0;
-            delay(5000);
         }
         
     }
     i++;
 }
 
-// void loop()
-// {
-//     if(device.receive()) {
-//         Serial.println("Packet received successfully.");
-//     }
-// }

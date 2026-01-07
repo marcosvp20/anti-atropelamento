@@ -53,7 +53,7 @@ void PersonalDevice::sendMonitoring() {
 }
 bool PersonalDevice::receive() {
     lora.SpreadingFactor(7);
-    if(lora.receiveData(receivedPacket, MONITORING_PACKET_SIZE)) {
+    if(lora.receiveData(receivedPacket, MONITORING_PACKET_SIZE, 1000)) {
     pckt.decodePacket(receivedPacket);
     return true;
     }
@@ -88,4 +88,11 @@ void PersonalDevice::updateFromBluetooth(String rawData) {
         
         Serial.println("\n>>> Dados atualizados via BLE.");
     }
+}
+
+float PersonalDevice::getSpeed() const {
+    return speed;
+}
+void PersonalDevice::setSpeed(float speedValue) {
+    speed = speedValue;
 }

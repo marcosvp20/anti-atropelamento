@@ -30,6 +30,9 @@ class PersonalDevice {
     float getAccelerationY() const;
     void setAccelerationY(float ay);
 
+    void setSpeed(float speedValue);
+    float getSpeed() const;
+
     void sendSafety();
     void sendMonitoring();
     bool receive();
@@ -53,6 +56,7 @@ class PersonalDevice {
     uint8_t receivedPacket[MONITORING_PACKET_SIZE];
     float accelerationX;
     float accelerationY;
+    float speed;
     CMSLoRa lora;
 };
 
