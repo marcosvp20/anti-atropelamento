@@ -20,7 +20,7 @@ void loop() {
     {
         Serial.println("Sending Safety Packet...");
         device.sendSafety();
-        delay(1000);
+        delay(5000);
     }
     if(i == 5) {
         Serial.println("Sending Monitoring Packet...");
@@ -32,8 +32,10 @@ void loop() {
         else
         {
             device.sendMonitoring();
+            i = 0;
+            delay(5000);
         }
-        i = 0;
+        
     }
     i++;
 }

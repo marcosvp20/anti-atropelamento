@@ -11,9 +11,9 @@ int i = 0;
 void setup() {
     Serial.begin(9600);
     device.setup();
-    // device.setID(1);
-    // device.setLatitude(37.7749);
-    // device.setLongitude(-122.4194);
+    device.setID(1);
+    device.setLatitude(57.7749);
+    device.setLongitude(-102.4194);
     device.setAccelerationX(0.5);
     device.setAccelerationY(1.0);
 
@@ -36,6 +36,7 @@ void loop() {
     {
         Serial.println("Sending Safety Packet...");
         device.sendSafety();
+        delay(1000);
     }
     if(i == 5) {
         Serial.println("Sending Monitoring Packet...");

@@ -5,8 +5,8 @@ void packet::safetyPacket(uint8_t ID, uint8_t deviceType, float latitude, float 
     returnPacket[1] = ID;
     returnPacket[2] = deviceType;
 
-    memccpy(&returnPacket[3], &latitude, 0, sizeof(float));
-    memccpy(&returnPacket[7], &longitude, 0, sizeof(float));
+    memcpy(&returnPacket[3], &latitude, sizeof(float));
+    memcpy(&returnPacket[7], &longitude, sizeof(float));
 }
 
 void packet::monitoringPacket(uint8_t ID, uint8_t deviceType, float latitude, float longitude, uint8_t batteryLevel, float last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket) {
@@ -14,13 +14,13 @@ void packet::monitoringPacket(uint8_t ID, uint8_t deviceType, float latitude, fl
     returnPacket[1] = ID;
     returnPacket[2] = deviceType;
 
-    memccpy(&returnPacket[3], &latitude, 0, sizeof(float));
-    memccpy(&returnPacket[7], &longitude, 0, sizeof(float));
+    memcpy(&returnPacket[3], &latitude, sizeof(float));
+    memcpy(&returnPacket[7], &longitude, sizeof(float));
     returnPacket[11] = batteryLevel;
 
     for (int i = 0; i < 5; i++) {
-        memccpy(&returnPacket[12 + i * 8], &last5positions[i][0], 0, sizeof(float));
-        memccpy(&returnPacket[16 + i * 8], &last5positions[i][1], 0, sizeof(float));
+        memcpy(&returnPacket[12 + i * 8], &last5positions[i][0], sizeof(float));
+        memcpy(&returnPacket[16 + i * 8], &last5positions[i][1], sizeof(float));
     }
 
     for (int i = 0; i < 5; i++) {
@@ -38,8 +38,8 @@ void packet::decodePacket(uint8_t *receivedPacket) {
     float latitude;
     float longitude;
 
-    memccpy(&latitude, &receivedPacket[3], 0, sizeof(float));
-    memccpy(&longitude, &receivedPacket[7], 0, sizeof(float));
+    memcpy(&latitude, &receivedPacket[3], sizeof(float));
+    memcpy(&longitude, &receivedPacket[7], sizeof(float));
 
     if (packetID == SAFETY_PACKET) {
         Serial.println("Decoding Safety Packet...");
@@ -49,6 +49,13 @@ void packet::decodePacket(uint8_t *receivedPacket) {
         safetyPacketData.latitude = latitude;
         safetyPacketData.longitude = longitude;
 
+        Serial.println("ID: " + String(safetyPacketData.ID));
+        Serial.println("Device Type: " + String(safetyPacketData.deviceType));
+        Serial.println("Latitude: " + String(safetyPacketData.latitude, 6));
+        Serial.println("Longitude: " + String(longitude, 6));
+
+        Serial.println();
+
     } else if (packetID == MONITORING_PACKET) {
         Serial.println("Decoding Monitoring Packet...");
         uint8_t batteryLevel = receivedPacket[11];
@@ -57,8 +64,8 @@ void packet::decodePacket(uint8_t *receivedPacket) {
         uint8_t status;
 
         for (int i = 0; i < 5; i++) {
-            memccpy(&last5positions[i][0], &receivedPacket[12 + i * 8], 0, sizeof(float));
-            memccpy(&last5positions[i][1], &receivedPacket[16 + i * 8], 0, sizeof(float));
+            memcpy(&last5positions[i][0], &receivedPacket[12 + i * 8], sizeof(float));
+            memcpy(&last5positions[i][1], &receivedPacket[16 + i * 8], sizeof(float));
         }
 
         for (int i = 0; i < 5; i++) {
@@ -80,5 +87,21 @@ void packet::decodePacket(uint8_t *receivedPacket) {
             monitoringPacketData.last5events[i] = last5events[i];
         }
         monitoringPacketData.status = status;
+
+        Serial.println("ID: " + String(ID));
+        Serial.println("Device Type: " + String(deviceType));
+        Serial.println("Latitude: " + String(latitude, 6));
+        Serial.println("Longitude: " + String(longitude, 6));
+        Serial.println("Battery Level: " + String(batteryLevel) + "%");
+        Serial.println("Last 5 Positions:");
+        for (int i = 0; i < 5; i++) {
+            Serial.println("  Position " + String(i + 1) + ": (" + String(last5positions[i][0], 6) + ", " + String(last5positions[i][1], 6) + ")");
+        }
+        Serial.println("Last 5 Events:");
+        for (int i = 0; i < 5; i++) {
+            Serial.println("  Event " + String(i + 1) + ": " + String(last5events[i]));
+        }
+        Serial.println("Status: " + String(status));
+        Serial.println();
     }
 }

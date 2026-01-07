@@ -44,11 +44,11 @@ void PersonalDevice::setAccelerationY(float ay) {
     accelerationY = ay;
 }
 void PersonalDevice::sendSafety() {
-    pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);
+    // pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);
     lora.sendData(safetyPacket, SAFETY_PACKET_SIZE);
 }
 void PersonalDevice::sendMonitoring() {
-    pckt.monitoringPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, batteryLevel, last5positions, last5events, status, monitoringPacket);
+    // pckt.monitoringPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, batteryLevel, last5positions, last5events, status, monitoringPacket);
     lora.sendData(monitoringPacket, MONITORING_PACKET_SIZE);
 }
 bool PersonalDevice::receive() {

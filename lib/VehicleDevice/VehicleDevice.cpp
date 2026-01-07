@@ -37,13 +37,13 @@ void VehicleDevice::setSpeed(float speedValue) {
     speed = speedValue;
 }
 void VehicleDevice::sendSafety() {
-    lora.SpreadingFactor(7);
-    pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);
+    // lora.SpreadingFactor(7);
+    // pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);
     lora.sendData(safetyPacket, SAFETY_PACKET_SIZE);
 }
 void VehicleDevice::sendMonitoring() {
-    lora.SpreadingFactor(9);
-    pckt.monitoringPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, batteryLevel, last5positions, last5events, status, monitoringPacket);
+    // lora.SpreadingFactor(9);
+    // pckt.monitoringPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, batteryLevel, last5positions, last5events, status, monitoringPacket);
     lora.sendData(monitoringPacket, MONITORING_PACKET_SIZE);
 }
 bool VehicleDevice::receive() {
