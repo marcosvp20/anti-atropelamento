@@ -96,3 +96,28 @@ float PersonalDevice::getSpeed() const {
 void PersonalDevice::setSpeed(float speedValue) {
     speed = speedValue;
 }
+// Função auxiliar continua necessária
+float PersonalDevice::toRadians(float degree) {
+    return degree * (PI / 180.0);
+}
+
+// Implementação Otimizada (Aproximação Equirretangular)
+float PersonalDevice::calculateDistance(float targetLat, float targetLng) {
+    // não faz a corversão de minutos e segundo para graus, usar a biblioteca TinyGPS++ para isso antes de chamar essa função
+    const float R = 6371000.0; // Raio da Terra em metros
+
+    // Converter para radianos (necessário para o cálculo correto)
+    float lat1 = toRadians(deviceLatitude);
+    float lon1 = toRadians(deviceLongitude);
+    float lat2 = toRadians(targetLat);
+    float lon2 = toRadians(targetLng);
+
+    // Ajuste da longitude baseada na latitude média (o "achatamento" do mapa)
+    float x = (lon2 - lon1) * cos((lat1 + lat2) / 2.0);
+    float y = lat2 - lat1;
+
+    // Pitágoras simples: Raiz(x² + y²) * Raio
+    float distance = sqrt(x * x + y * y) * R;
+
+    return distance;
+}

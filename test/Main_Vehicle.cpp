@@ -1,6 +1,13 @@
 #include "VehicleDevice.h"
+#include "SimpleTimer.h"
+
+#define SAFETY_TIMER 5000
+#define MONITORING_TIMER 60000
+
 VehicleDevice device;
-int i = 0;
+SimpleTimer safetyTimer(SAFETY_TIMER);
+SimpleTimer monitoringTimer(MONITORING_TIMER);
+
 void setup() {
     Serial.begin(9600);
     device.setup();
@@ -8,33 +15,37 @@ void setup() {
     device.setLatitude(37.7749);
     device.setLongitude(-122.4194);
     device.setSpeed(60.0);
+
 }
 void loop() {
     device.receive();
-    if(device.isChannelBusy(SAFETY_CHANNEL) && i < 5)
-    {
-        Serial.println("Channel is busy, waiting... a random time");
-        delay(random(500, 1000));
+    if(safetyTimer.isReady()){
+        if(device.isChannelBusy(SAFETY_CHANNEL))
+        {
+            Serial.println("Channel is busy, waiting... a random time");
+            safetyTimer.setInterval(random(500, 1000));
+            safetyTimer.reset();
+        }
+        else
+        {
+            Serial.println("Sending Safety Packet...");
+            device.sendSafety();
+            safetyTimer.reset();
+        }
     }
-    else
-    {
-        Serial.println("Sending Safety Packet...");
-        device.sendSafety();
-    }
-    if(i == 5) {
+    if(monitoringTimer.isReady()){
         if(device.isChannelBusy(MONITORING_CHANNEL))
         {
             Serial.println("Channel is busy, waiting... a random time");
-            delay(random(500, 1000));
+            monitoringTimer.setInterval(random(500, 1000));
+            monitoringTimer.reset();
         }
         else
         {
             Serial.println("Sending Monitoring Packet...");
             device.sendMonitoring();
-            i = 0;
+            monitoringTimer.reset();
         }
-        
-    }
-    i++;
+}
 }
 

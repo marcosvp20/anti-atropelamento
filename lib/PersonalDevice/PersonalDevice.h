@@ -41,6 +41,8 @@ class PersonalDevice {
 
     void updateFromBluetooth(String rawData);
 
+    float calculateDistance(float targetLat, float targetLng);
+
   private:
     uint8_t deviceID;
     float deviceLatitude;
@@ -58,6 +60,8 @@ class PersonalDevice {
     float accelerationY;
     float speed;
     CMSLoRa lora;
+
+    float toRadians(float degree);
 };
 
 #endif
