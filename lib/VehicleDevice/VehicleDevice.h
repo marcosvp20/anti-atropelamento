@@ -32,6 +32,12 @@ class VehicleDevice {
 
     bool isChannelBusy(int channel);
 
+    uint8_t calculateRiskMask(float steeringAngle);
+
+    float course; // Direção atual do veículo (0-360)
+    uint8_t currentRiskMask;
+    uint8_t riskRadius;
+
   private:
     uint8_t deviceID;
     float deviceLatitude;
@@ -42,6 +48,7 @@ class VehicleDevice {
     uint8_t deviceType = VEHICLE_DEVICE;
     float last5positions[5][2];
     uint8_t last5events[5];
+    
     packet pckt;
     uint8_t safetyPacket[SAFETY_PACKET_SIZE];
     uint8_t monitoringPacket[MONITORING_PACKET_SIZE];
