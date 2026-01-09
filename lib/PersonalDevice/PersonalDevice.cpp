@@ -64,7 +64,7 @@ bool PersonalDevice::isChannelBusy(int channel) {
     if(channel == SAFETY_CHANNEL) {
         // talvez seja mais apropriado fazer o pacote aqui para que o envio seja logo após a verificação do canal
         lora.SpreadingFactor(7);
-        pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);
+        pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, course, riskRadius, currentRiskMask, safetyPacket);
     } else if(channel == MONITORING_CHANNEL) {
         lora.SpreadingFactor(9);
         pckt.monitoringPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, batteryLevel, last5positions, last5events, status, monitoringPacket);

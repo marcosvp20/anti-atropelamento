@@ -60,10 +60,33 @@ uint8_t VehicleDevice::calculateRiskMask(float steeringAngle) {
 
     return mask;
 }
+void VehicleDevice::updateSteeringFromCourse() {
+    // 1. Calcula a diferença bruta
+    float deltaCourse = course - lastCourse;
+
+    // 2. Normaliza a diferença para o intervalo [-180, 180]
+    // Isso resolve o problema da passagem pelos 360°/0°
+    if (deltaCourse > 180) deltaCourse -= 360;
+    if (deltaCourse < -180) deltaCourse += 360;
+
+    // 3. Filtro de ruído: Se a variação for mínima (ex: < 1 grau), ignoramos
+    // Se a variação for rápida, estimamos o steeringAngle
+    // Nota: O valor 5.0 é um limiar de sensibilidade que você pode ajustar
+    if (abs(deltaCourse) > 1.0) {
+        this->steeringAngle = deltaCourse * 5.0; // Ganho para simular ângulo do volante
+    } else {
+        this->steeringAngle = 0;
+    }
+
+    // 4. Atualiza o último curso para a próxima leitura
+    lastCourse = course;
+}
 
 void VehicleDevice::sendSafety() {
+
+    updateSteeringFromCourse();
     // Definimos um raio de risco dinâmico baseado na velocidade (ex: 10m base + acréscimo)
-    riskRadius = (uint8_t)(10 + (speed * 1.5)); 
+    riskRadius = (uint8_t)(10 + (abs(speed) * 1.5)); 
     
     // Para este exemplo, assumimos que o steeringAngle vem de algum sensor 
     // ou da variação de curso. Se não tiver, passe 0.
@@ -106,7 +129,7 @@ bool VehicleDevice::receive() {
 bool VehicleDevice::isChannelBusy(int channel) {
     if(channel == SAFETY_CHANNEL) {
         lora.SpreadingFactor(7);
-        pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);
+        pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, course, riskRadius, currentRiskMask, safetyPacket);
     } else if(channel == MONITORING_CHANNEL) {
         lora.SpreadingFactor(9);
         pckt.monitoringPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, batteryLevel, last5positions, last5events, status, monitoringPacket);

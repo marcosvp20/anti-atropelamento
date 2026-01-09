@@ -33,6 +33,7 @@ class VehicleDevice {
     bool isChannelBusy(int channel);
 
     uint8_t calculateRiskMask(float steeringAngle);
+    void updateSteeringFromCourse();
 
     float course; // Direção atual do veículo (0-360)
     uint8_t currentRiskMask;
@@ -43,6 +44,8 @@ class VehicleDevice {
     float deviceLatitude;
     float deviceLongitude;
     float speed;
+    float lastCourse; // Armazena o curso da última execução para cálculo de delta
+    float steeringAngle;
     uint8_t batteryLevel;
     uint8_t status;
     uint8_t deviceType = VEHICLE_DEVICE;

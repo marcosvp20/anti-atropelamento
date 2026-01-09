@@ -1,12 +1,24 @@
 #include "packet.h"
 
-void packet::safetyPacket(uint8_t ID, uint8_t deviceType, float latitude, float longitude, uint8_t *returnPacket) {
+void packet::safetyPacket(uint8_t ID, uint8_t deviceType, float latitude, float longitude, 
+                          uint16_t course, uint8_t riskRadius, uint8_t dangerMask, uint8_t *returnPacket) {
+    
     returnPacket[0] = SAFETY_PACKET;
     returnPacket[1] = ID;
     returnPacket[2] = deviceType;
 
+    // Mantendo sua lógica de memcpy para as coordenadas (4 bytes cada)
     memcpy(&returnPacket[3], &latitude, sizeof(float));
     memcpy(&returnPacket[7], &longitude, sizeof(float));
+
+    // Serialização do Course (uint16_t - 2 bytes)
+    // Quebramos em High Byte e Low Byte
+    returnPacket[11] = (uint8_t)(course >> 8);
+    returnPacket[12] = (uint8_t)(course & 0xFF);
+
+    // Campos de Risco (1 byte cada)
+    returnPacket[13] = riskRadius;
+    returnPacket[14] = dangerMask;
 }
 
 void packet::monitoringPacket(uint8_t ID, uint8_t deviceType, float latitude, float longitude, uint8_t batteryLevel, float last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket) {
@@ -42,18 +54,26 @@ void packet::decodePacket(uint8_t *receivedPacket) {
     memcpy(&longitude, &receivedPacket[7], sizeof(float));
 
     if (packetID == SAFETY_PACKET) {
-        Serial.println("Decoding Safety Packet...");
+        Serial.println("Decoding Safety Packet (Enhanced)...");
         safetyPacketData.packetID = packetID;
         safetyPacketData.ID = ID;
         safetyPacketData.deviceType = deviceType;
         safetyPacketData.latitude = latitude;
         safetyPacketData.longitude = longitude;
 
-        Serial.println("ID: " + String(safetyPacketData.ID));
-        Serial.println("Device Type: " + String(safetyPacketData.deviceType));
-        Serial.println("Latitude: " + String(safetyPacketData.latitude, 6));
-        Serial.println("Longitude: " + String(longitude, 6));
+        // --- NOVOS CAMPOS DE RISCO ---
+        // Reconstrói o uint16_t (2 bytes) do curso
+        safetyPacketData.course = (uint16_t)((receivedPacket[11] << 8) | receivedPacket[12]);
+        
+        // Lê os bytes únicos de raio e máscara
+        safetyPacketData.RiskRadius = receivedPacket[13];
+        safetyPacketData.DangerMask = receivedPacket[14];
 
+        // Logs de Debug
+        Serial.println("ID: " + String(safetyPacketData.ID));
+        Serial.println("Course: " + String(safetyPacketData.course / 100.0) + "°");
+        Serial.println("Risk Radius: " + String(safetyPacketData.RiskRadius) + "m");
+        Serial.print("Danger Mask: 0b"); Serial.println(safetyPacketData.DangerMask, BIN);
         Serial.println();
 
     } else if (packetID == MONITORING_PACKET) {
