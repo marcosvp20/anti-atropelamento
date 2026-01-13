@@ -41,7 +41,7 @@ class PersonalDevice {
 
     void updateFromBluetooth(String rawData);
 
-    float calculateDistance(float targetLat, float targetLng);
+   
     float course; // Direção atual do veículo (0-360)
     uint8_t currentRiskMask;
     uint8_t riskRadius;
@@ -64,8 +64,6 @@ class PersonalDevice {
     float accelerationY;
     float speed;
     CMSLoRa lora;
-
-    float toRadians(float degree);
 };
 
 #endif

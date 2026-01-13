@@ -1,7 +1,9 @@
 #include "VehicleDevice.h"
+
+TinyGPSPlus gps;
 VehicleDevice::VehicleDevice()
     : deviceID(0), deviceLatitude(0.0), deviceLongitude(0.0), speed(0.0), 
-      course(0.0), currentRiskMask(0), riskRadius(10), // Inicialização das novas vars
+      course(0.0), lastCourse(0.0), currentRiskMask(0), riskRadius(10), // Inicialização das novas vars
       batteryLevel(100), status(0) {
     
     for (int i = 0; i < 5; i++) {
@@ -24,62 +26,79 @@ void VehicleDevice::setID(uint8_t id) {
 float VehicleDevice::getLatitude() const {
     return deviceLatitude;
 }
-void VehicleDevice::setLatitude(float latitude) {
-    deviceLatitude = latitude;
+void VehicleDevice::setLatitude() {
+    deviceLatitude = gps.location.lat();
 }
 float VehicleDevice::getLongitude() const {
     return deviceLongitude;
 }
-void VehicleDevice::setLongitude(float longitude) {
-    deviceLongitude = longitude;
+void VehicleDevice::setLongitude() {
+    deviceLongitude = gps.location.lng();
 }
 float VehicleDevice::getSpeed() const {
     return speed;
 }
 void VehicleDevice::setSpeed(float speedValue) {
     speed = speedValue;
+    //speed = gps.speed.kmph();
 }
-#include "VehicleDevice.h"
+float VehicleDevice::getCourse() const {
+    return this->course;
+}
+void VehicleDevice::setCourse() {
+    if (gps.course.isValid()) {
+        this->course = gps.course.deg();
+    }
+}
 
 uint8_t VehicleDevice::calculateRiskMask(float steeringAngle) {
     uint8_t mask = 0;
+    float currentSpeed = gps.speed.kmph();
 
-    // Se estiver quase parado, ativa proteção 360° (Bolha total)
-    if (abs(speed) < 1.0) return 0x0F; 
+    // Se estiver quase parado, proteção 360°
+    if (currentSpeed < 1.0) return 0x0F; 
 
-    if (speed > 1.0) {
-        mask |= 0x01; // Liga Bit 0: Frente (Sempre ativo se movendo pra frente)
+    // Movimento para frente
+    if (currentSpeed >= 1.0) {
+        mask |= 0x01; // Bit 0: Frente
 
-        // Se o volante/direção indicar curva significativa
-        if (steeringAngle > 10.0) mask |= 0x02; // Liga Bit 1: Lateral Direita
-        if (steeringAngle < -10.0) mask |= 0x04; // Liga Bit 2: Lateral Esquerda
+        // Usa o steeringAngle calculado na função anterior
+        if (steeringAngle > 10.0)      mask |= 0x02; // Bit 1: Direita
+        else if (steeringAngle < -10.0) mask |= 0x04; // Bit 2: Esquerda
     } 
-    else if (speed < -1.0) {
-        mask |= 0x08; // Liga Bit 3: Traseira (Marcha à ré)
-    }
 
+    this->currentRiskMask = mask; // Armazena o resultado na classe
     return mask;
 }
-void VehicleDevice::updateSteeringFromCourse() {
-    // 1. Calcula a diferença bruta
-    float deltaCourse = course - lastCourse;
 
-    // 2. Normaliza a diferença para o intervalo [-180, 180]
-    // Isso resolve o problema da passagem pelos 360°/0°
+void VehicleDevice::updateSteeringFromCourse() {
+    // 1. Primeiro atualizamos o valor interno com o dado mais recente do GPS
+    float currentCourse = gps.course.deg();
+
+    // 2. Se a velocidade for muito baixa, o curso do GPS oscila (ruído)
+    // Então só calculamos o steering se houver movimento real
+    if (gps.speed.kmph() < 1.0) {
+        this->steeringAngle = 0;
+        return;
+    }
+
+    // 3. Calcula a diferença usando o 'course' (atualizado agora) e o 'lastCourse'
+    float deltaCourse = currentCourse - this->lastCourse;
+
+    // 4. Normalização (Correção do pulo 360/0)
     if (deltaCourse > 180) deltaCourse -= 360;
     if (deltaCourse < -180) deltaCourse += 360;
 
-    // 3. Filtro de ruído: Se a variação for mínima (ex: < 1 grau), ignoramos
-    // Se a variação for rápida, estimamos o steeringAngle
-    // Nota: O valor 5.0 é um limiar de sensibilidade que você pode ajustar
+    // 5. Filtro de sensibilidade e atualização do steeringAngle
     if (abs(deltaCourse) > 1.0) {
-        this->steeringAngle = deltaCourse * 5.0; // Ganho para simular ângulo do volante
+        this->steeringAngle = deltaCourse * 5.0; 
     } else {
         this->steeringAngle = 0;
     }
 
-    // 4. Atualiza o último curso para a próxima leitura
-    lastCourse = course;
+    // 6. Sincroniza o 'course' público e prepara o 'lastCourse' para a próxima rodada
+    this->course = currentCourse;
+    this->lastCourse = currentCourse;
 }
 
 void VehicleDevice::sendSafety() {
@@ -90,7 +109,7 @@ void VehicleDevice::sendSafety() {
     
     // Para este exemplo, assumimos que o steeringAngle vem de algum sensor 
     // ou da variação de curso. Se não tiver, passe 0.
-    currentRiskMask = calculateRiskMask(0); 
+    currentRiskMask = calculateRiskMask(this->steeringAngle); 
 
     // Montando o pacote reduzido para LoRa (Exemplo de preenchimento do buffer)
     // Aqui você usaria o seu objeto 'pckt' para formatar esses novos campos
@@ -99,9 +118,12 @@ void VehicleDevice::sendSafety() {
     lora.SpreadingFactor(7);
     lora.sendData(safetyPacket, SAFETY_PACKET_SIZE);
     
-    Serial.print("Broadcast Risco - Mask: 0x");
-    Serial.print(currentRiskMask, HEX);
-    Serial.print(" Raio: "); Serial.println(riskRadius);
+    Serial.println("Broadcast Risco - Mask: 0x");
+    Serial.println(currentRiskMask, HEX);
+    Serial.println(" Raio: "); 
+    Serial.println(riskRadius);
+    Serial.println(" Angulo: "); 
+    Serial.println(steeringAngle);
 }
 
 void VehicleDevice::sendMonitoring() {

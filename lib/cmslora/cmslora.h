@@ -3,6 +3,7 @@
 
 #include <RadioLib.h>
 #include <SPI.h>
+#include <TinyGPS++.h>
 //#include "timer.h"
 
 class CMSLoRa {

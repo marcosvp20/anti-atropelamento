@@ -18,13 +18,16 @@ class VehicleDevice {
     void setID(uint8_t id);
 
     float getLatitude() const;
-    void setLatitude(float latitude);
+    void setLatitude();
 
     float getLongitude() const;
-    void setLongitude(float longitude);
+    void setLongitude();
 
     float getSpeed() const;
     void setSpeed(float speed);
+    
+    float getCourse() const;
+    void setCourse();
 
     void sendSafety();
     void sendMonitoring();
