@@ -12,9 +12,10 @@ void setup() {
     Serial.begin(9600);
     device.setup();
     device.setID(2);
-    device.setLatitude(37.7749);
-    device.setLongitude(-122.4194);
-    device.setSpeed(60.0);
+    device.setLatitude(377749);
+    device.setLongitude(-1224194);
+    device.setSpeed(60.4321);
+    device.setCourse(34.1234);
 
 }
 void loop() {
@@ -29,7 +30,9 @@ void loop() {
         else
         {
             Serial.println("Sending Safety Packet...");
-            device.sendSafety();
+            //device.sendSafety();
+            device.sendAlert(ALERT_INTERLOCK, 1);
+            
             safetyTimer.reset();
         }
     }

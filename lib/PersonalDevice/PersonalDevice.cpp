@@ -19,17 +19,23 @@ uint8_t PersonalDevice::getID() const {
 void PersonalDevice::setID(uint8_t id) {
     deviceID = id;
 }
-float PersonalDevice::getLatitude() const {
+int32_t PersonalDevice::getLatitude() const {
     return deviceLatitude;
 }
-void PersonalDevice::setLatitude(float latitude) {
+void PersonalDevice::setLatitude(int32_t latitude) {
     deviceLatitude = latitude;
 }
-float PersonalDevice::getLongitude() const {
+int32_t PersonalDevice::getLongitude() const {
     return deviceLongitude;
 }
-void PersonalDevice::setLongitude(float longitude) {
+void PersonalDevice::setLongitude(int32_t longitude) {
     deviceLongitude = longitude;
+}
+unsigned long PersonalDevice::getSpeed() const {
+    return speed;
+}
+void PersonalDevice::setSpeed(unsigned long speedValue) {
+    speed = speedValue;
 }
 float PersonalDevice::getAccelerationX() const {
     return accelerationX;
@@ -60,6 +66,7 @@ bool PersonalDevice::receive() {
     return false;
 
 }
+// Verifica se o canal está ocupado e constroi os pacotes, caso o pacote fosse construido na função que envia os dados, correria o risco do o canal estar ocupado e a verificação retornaria um falso positivo
 bool PersonalDevice::isChannelBusy(int channel) {
     if(channel == SAFETY_CHANNEL) {
         // talvez seja mais apropriado fazer o pacote aqui para que o envio seja logo após a verificação do canal
@@ -81,7 +88,6 @@ void PersonalDevice::updateFromBluetooth(String rawData) {
         float novaLat = rawData.substring(firstSemi + 1, secondSemi).toFloat();
         float novaLng = rawData.substring(secondSemi + 1).toFloat();
 
-        // Usa os setters que você já tem
         setID(novoID);
         setLatitude(novaLat);
         setLongitude(novaLng);
@@ -89,12 +95,11 @@ void PersonalDevice::updateFromBluetooth(String rawData) {
         Serial.println("\n>>> Dados atualizados via BLE.");
     }
 }
-
-float PersonalDevice::getSpeed() const {
-    return speed;
-}
-void PersonalDevice::setSpeed(float speedValue) {
-    speed = speedValue;
+void PersonalDevice::sendAlert(uint8_t alertType, uint8_t targetID) {
+    // Construir o pacote de alerta
+    uint8_t alertPacket[ADVERTISE_PACKET_SIZE]; // Tamanho arbitrário, ajuste conforme necessário
+    pckt.advertisePacket(alertType, targetID, alertPacket);    // Enviar o pacote de alerta
+    lora.sendData(alertPacket, sizeof(alertPacket));
 }
 // Função auxiliar continua necessária
 float PersonalDevice::toRadians(float degree) {

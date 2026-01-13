@@ -18,23 +18,31 @@ uint8_t VehicleDevice::getID() const {
 void VehicleDevice::setID(uint8_t id) {
     deviceID = id;
 }
-float VehicleDevice::getLatitude() const {
+int32_t VehicleDevice::getLatitude() const {
     return deviceLatitude;
 }
-void VehicleDevice::setLatitude(float latitude) {
+void VehicleDevice::setLatitude(int32_t latitude) {
+    Serial.println("Setting latitude to: " + String(latitude));
     deviceLatitude = latitude;
 }
-float VehicleDevice::getLongitude() const {
+int32_t VehicleDevice::getLongitude() const {
     return deviceLongitude;
 }
-void VehicleDevice::setLongitude(float longitude) {
+void VehicleDevice::setLongitude(int32_t longitude) {
+    Serial.println("Setting longitude to: " + String(longitude));
     deviceLongitude = longitude;
 }
-float VehicleDevice::getSpeed() const {
+unsigned long VehicleDevice::getSpeed() const {
     return speed;
 }
-void VehicleDevice::setSpeed(float speedValue) {
+void VehicleDevice::setSpeed(unsigned long speedValue) {
     speed = speedValue;
+}
+unsigned long VehicleDevice::getCourse() const {
+    return course;
+}
+void VehicleDevice::setCourse(unsigned long courseValue) {
+    course = courseValue;
 }
 void VehicleDevice::sendSafety() {
     // lora.SpreadingFactor(7);
@@ -53,11 +61,11 @@ bool VehicleDevice::receive() {
     pckt.decodePacket(receivedPacket);
     Serial.println("Received Packet:");
     Serial.print("ID: ");
-    Serial.println(pckt.safetyPacketData.ID);
+    Serial.println(pckt.safetyData.ID);
     Serial.print("Latitude: ");
-    Serial.println(pckt.safetyPacketData.latitude, 6);
+    Serial.println(pckt.safetyData.lat, 6);
     Serial.print("Longitude: ");
-    Serial.println(pckt.safetyPacketData.longitude, 6);
+    Serial.println(pckt.safetyData.lng, 6);
     return true;
     }
     return false;
@@ -66,10 +74,17 @@ bool VehicleDevice::receive() {
 bool VehicleDevice::isChannelBusy(int channel) {
     if(channel == SAFETY_CHANNEL) {
         lora.SpreadingFactor(7);
-        pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);
+        pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket, speed, course);
     } else if(channel == MONITORING_CHANNEL) {
         lora.SpreadingFactor(9);
         pckt.monitoringPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, batteryLevel, last5positions, last5events, status, monitoringPacket);
     }
     return lora.isChannelBusy();
+}
+
+void VehicleDevice::sendAlert(uint8_t alertType, uint8_t targetID) {
+    // Construir o pacote de alerta
+    uint8_t alertPacket[ADVERTISE_PACKET_SIZE]; // Tamanho arbitrário, ajuste conforme necessário
+    pckt.advertisePacket(alertType, targetID, alertPacket);    // Enviar o pacote de alerta
+    lora.sendData(alertPacket, sizeof(alertPacket));
 }

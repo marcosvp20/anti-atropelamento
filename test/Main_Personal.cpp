@@ -11,7 +11,6 @@ BLEHandle ble(device); // Vincula o Bluetooth ao Crachá
 #define STOPPED_SAFETY_TIMER 5000
 #define MONITORING_TIMER 60000
 
-// Local 2 (O outro ponto que você mandou)
 #define LOCAL_1_LAT  -19.96792253900216
 #define LOCAL_1_LNG  -43.955467856491474
 
@@ -22,7 +21,7 @@ BLEHandle ble(device); // Vincula o Bluetooth ao Crachá
 // #define LOCAL_2_LNG  -43.95160025506842
 // --- INSTANCIAÇÃO DOS TIMERS ---
 // Define os intervalos iniciais
-SimpleTimer safetyTimer(STOPPED_SAFETY_TIMER);      
+SimpleTimer safetyTimer(STOPPED_SAFETY_TIMER);        
 SimpleTimer monitoringTimer(MONITORING_TIMER); 
 SimpleTimer simTimer(50000);        
 
@@ -87,8 +86,9 @@ void loop() {
         else {
             Serial.println("Sending Safety Packet...");
             //Serial.println("Intervalo atual do Safety Timer: " + String(millis() - lastMillis) + " ms");
-            device.sendSafety();
-            Serial.println("Distance calculed between devices: "+ String(device.calculateDistance(LOCAL_2_LAT, LOCAL_2_LNG)) + "m");
+            //device.sendSafety();
+            device.sendAlert(ALERT_ADVERTISE, 2);
+            // Serial.println("Distance calculed between devices: "+ String(device.calculateDistance(LOCAL_2_LAT, LOCAL_2_LNG)) + "m");
             
             safetyTimer.setInterval(STOPPED_SAFETY_TIMER);
             safetyTimer.reset(); 
