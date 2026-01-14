@@ -88,7 +88,7 @@ void loop() {
             //Serial.println("Intervalo atual do Safety Timer: " + String(millis() - lastMillis) + " ms");
             //device.sendSafety();
             device.sendAlert(ALERT_ADVERTISE, 2);
-            // Serial.println("Distance calculed between devices: "+ String(device.calculateDistance(LOCAL_2_LAT, LOCAL_2_LNG)) + "m");
+            Serial.println("Distance calculed between devices: "+ String(device.calculateDistance(LOCAL_2_LAT, LOCAL_2_LNG)) + "m");
             
             safetyTimer.setInterval(STOPPED_SAFETY_TIMER);
             safetyTimer.reset(); 

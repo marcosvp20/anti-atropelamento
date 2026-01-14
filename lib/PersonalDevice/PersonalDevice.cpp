@@ -112,8 +112,8 @@ float PersonalDevice::calculateDistance(float targetLat, float targetLng) {
     const float R = 6371000.0; // Raio da Terra em metros
 
     // Converter para radianos (necessário para o cálculo correto)
-    float lat1 = toRadians(deviceLatitude);
-    float lon1 = toRadians(deviceLongitude);
+    float lat1 = toRadians(-19.96792253900216);
+    float lon1 = toRadians(-43.955467856491474);
     float lat2 = toRadians(targetLat);
     float lon2 = toRadians(targetLng);
 

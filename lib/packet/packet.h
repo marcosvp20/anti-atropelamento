@@ -88,7 +88,7 @@ public:
     
     void advertisePacket(uint8_t ID, uint8_t deviceID, uint8_t *returnPacket);
     
-    void decodePacket(uint8_t *receivedPacket);
+    uint8_t decodePacket(uint8_t *receivedPacket);
 
     // Helpers (Mantive se você quiser usar fora, mas internamente o código resolve)
     uint8_t mapULToUint8(unsigned long value);

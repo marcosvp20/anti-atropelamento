@@ -76,7 +76,7 @@ void packet::advertisePacket(uint8_t ID, uint8_t deviceID, uint8_t *returnPacket
 
 // --- DECODIFICADOR ---
 
-void packet::decodePacket(uint8_t *receivedPacket) {
+uint8_t packet::decodePacket(uint8_t *receivedPacket) {
     uint8_t packetID = receivedPacket[0];
 
     if (packetID == SAFETY_PACKET) {
@@ -151,4 +151,5 @@ void packet::decodePacket(uint8_t *receivedPacket) {
         }
         Serial.println();
     }
+    return packetID;
 }
