@@ -2,8 +2,10 @@
 #define VEHICLEDEVICE_H
 
 #include "packet.h"
-#include <Arduino.h>
 #include "cmslora.h"
+#include <Arduino.h>
+#include "LoRaBoards.h"
+#include <TinyGPS++.h>
 
 #define MONITORING_CHANNEL 1
 #define SAFETY_CHANNEL 2
@@ -17,17 +19,20 @@ class VehicleDevice {
     uint8_t getID() const;
     void setID(uint8_t id);
 
-    int32_t getLatitude() const;
-    void setLatitude(int32_t latitude);
+    double getLatitude();
+    void setLatitude(double latitude);
 
-    int32_t getLongitude() const;
-    void setLongitude(int32_t longitude);
+    double getLongitude();
+    void setLongitude(double longitude);
 
-    unsigned long getSpeed() const;
-    void setSpeed(unsigned long speed);
+    double getSpeed();
+    void setSpeed(double speedValue);
+    
+    float getAccelerationX() const;
+    void setAccelerationX(float ax);
 
-    unsigned long getCourse() const;
-    void setCourse(unsigned long courseValue);
+    float getAccelerationY() const;
+    void setAccelerationY(float ay);
 
     void sendSafety();
     void sendMonitoring();
@@ -35,24 +40,37 @@ class VehicleDevice {
 
     bool isChannelBusy(int channel);
 
+    void updateFromBluetooth(String rawData);
+
+    float calculateDistance(float targetLat, float targetLng);
+
     void sendAlert(uint8_t alertType, uint8_t targetID);
+
+    double getCourse();
+    void setCourse(double course);
 
   private:
     uint8_t deviceID;
-    int32_t deviceLatitude;
-    int32_t deviceLongitude;
-    unsigned long speed;
-    unsigned long course;
+    double deviceLatitude;
+    double deviceLongitude;
     uint8_t batteryLevel;
     uint8_t status;
-    uint8_t deviceType = VEHICLE_DEVICE;
+    uint8_t deviceType = PERSONAL_DEVICE;
     int32_t last5positions[5][2];
     uint8_t last5events[5];
     packet pckt;
     uint8_t safetyPacket[SAFETY_PACKET_SIZE];
     uint8_t monitoringPacket[MONITORING_PACKET_SIZE];
     uint8_t receivedPacket[MONITORING_PACKET_SIZE];
+    double speed;
+    float accelerationX;
+    float accelerationY;
     CMSLoRa lora;
+    TinyGPSPlus gps;
+    double deviceCourse;
+
+
+    float toRadians(float degree);
 };
 
 #endif

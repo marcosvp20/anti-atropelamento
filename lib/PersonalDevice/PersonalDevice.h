@@ -4,10 +4,11 @@
 #include "packet.h"
 #include "cmslora.h"
 #include <Arduino.h>
+#include "LoRaBoards.h"
+#include <TinyGPS++.h>
 
 #define MONITORING_CHANNEL 1
 #define SAFETY_CHANNEL 2
-
 
 class PersonalDevice {
   public:
@@ -18,14 +19,14 @@ class PersonalDevice {
     uint8_t getID() const;
     void setID(uint8_t id);
 
-    int32_t getLatitude() const;
-    void setLatitude(int32_t latitude);
+    double getLatitude();
+    void setLatitude(double latitude);
 
-    int32_t getLongitude() const;
-    void setLongitude(int32_t longitude);
-    
-    unsigned long getSpeed() const;
-    void setSpeed(unsigned long speedValue);
+    double getLongitude();
+    void setLongitude(double longitude);
+
+    double getSpeed();
+    void setSpeed(double speedValue);
     
     float getAccelerationX() const;
     void setAccelerationX(float ax);
@@ -45,10 +46,13 @@ class PersonalDevice {
 
     void sendAlert(uint8_t alertType, uint8_t targetID);
 
+    double getCourse();
+    void setCourse(double course);
+
   private:
     uint8_t deviceID;
-    int32_t deviceLatitude;
-    int32_t deviceLongitude;
+    double deviceLatitude;
+    double deviceLongitude;
     uint8_t batteryLevel;
     uint8_t status;
     uint8_t deviceType = PERSONAL_DEVICE;
@@ -58,10 +62,13 @@ class PersonalDevice {
     uint8_t safetyPacket[SAFETY_PACKET_SIZE];
     uint8_t monitoringPacket[MONITORING_PACKET_SIZE];
     uint8_t receivedPacket[MONITORING_PACKET_SIZE];
-    unsigned long speed;
+    double speed;
     float accelerationX;
     float accelerationY;
     CMSLoRa lora;
+    TinyGPSPlus gps;
+    double deviceCourse;
+
 
     float toRadians(float degree);
 };

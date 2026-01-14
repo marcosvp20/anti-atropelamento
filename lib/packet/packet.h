@@ -82,17 +82,19 @@ struct __attribute__((packed)) AdvertisePayload {
 class packet {
 public:
     // Mantive as assinaturas idênticas ao seu código original para compatibilidade
-    void safetyPacket(uint8_t ID, uint8_t deviceType, int32_t latitude, int32_t longitude, uint8_t *returnPacket, unsigned long speed = 0, unsigned long course = 0);
+    void safetyPacket(uint8_t ID, uint8_t deviceType, double latitude, double longitude, uint8_t *returnPacket, double speed = 0, double course = 0);
     
-    void monitoringPacket(uint8_t ID, uint8_t deviceType, int32_t latitude, int32_t longitude, uint8_t batteryLevel, int32_t last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket);
+    void monitoringPacket(uint8_t ID, uint8_t deviceType, double latitude, double longitude, uint8_t batteryLevel, int32_t last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket);
     
     void advertisePacket(uint8_t ID, uint8_t deviceID, uint8_t *returnPacket);
     
     uint8_t decodePacket(uint8_t *receivedPacket);
 
     // Helpers (Mantive se você quiser usar fora, mas internamente o código resolve)
-    uint8_t mapULToUint8(unsigned long value);
+    uint8_t mapDoubleToUint8(double value);
     float mapUint8ToFloat(uint8_t value);
+
+    int32_t mapDoubleToInt32(double value);
 
     SafetyData safetyData;         
     MonitoringData monitoringData;

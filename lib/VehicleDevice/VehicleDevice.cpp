@@ -12,37 +12,47 @@ void VehicleDevice::setup() {
     lora.begin();
     lora.SpreadingFactor(7);
 }
+
 uint8_t VehicleDevice::getID() const {
     return deviceID;
 }
+
 void VehicleDevice::setID(uint8_t id) {
     deviceID = id;
 }
-int32_t VehicleDevice::getLatitude() const {
+
+double VehicleDevice::getLatitude(){
     return deviceLatitude;
 }
-void VehicleDevice::setLatitude(int32_t latitude) {
+
+void VehicleDevice::setLatitude(double latitude) {
     Serial.println("Setting latitude to: " + String(latitude));
     deviceLatitude = latitude;
 }
-int32_t VehicleDevice::getLongitude() const {
+
+double VehicleDevice::getLongitude(){
     return deviceLongitude;
 }
-void VehicleDevice::setLongitude(int32_t longitude) {
+
+void VehicleDevice::setLongitude(double longitude) {
     Serial.println("Setting longitude to: " + String(longitude));
     deviceLongitude = longitude;
 }
-unsigned long VehicleDevice::getSpeed() const {
+
+double VehicleDevice::getSpeed() {
     return speed;
 }
-void VehicleDevice::setSpeed(unsigned long speedValue) {
+
+void VehicleDevice::setSpeed(double speedValue) {
     speed = speedValue;
 }
-unsigned long VehicleDevice::getCourse() const {
-    return course;
+
+double VehicleDevice::getCourse() {
+    return deviceCourse;
 }
-void VehicleDevice::setCourse(unsigned long courseValue) {
-    course = courseValue;
+
+void VehicleDevice::setCourse(double courseValue) {
+    deviceCourse = courseValue;
 }
 void VehicleDevice::sendSafety() {
     // lora.SpreadingFactor(7);
@@ -74,7 +84,7 @@ bool VehicleDevice::receive() {
 bool VehicleDevice::isChannelBusy(int channel) {
     if(channel == SAFETY_CHANNEL) {
         lora.SpreadingFactor(7);
-        pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket, speed, course);
+        pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket, speed, deviceCourse);
     } else if(channel == MONITORING_CHANNEL) {
         lora.SpreadingFactor(9);
         pckt.monitoringPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, batteryLevel, last5positions, last5events, status, monitoringPacket);
