@@ -5,38 +5,57 @@ PersonalDevice::PersonalDevice()
         last5positions[i][0] = 0.0;
         last5positions[i][1] = 0.0;
         last5events[i] = 0;
-    }
-
-    
+    } 
 }
+
+
 void PersonalDevice::setup() {
     lora.begin();
     lora.SpreadingFactor(7);
 }
+
+
 uint8_t PersonalDevice::getID() const {
     return deviceID;
 }
+
+
 void PersonalDevice::setID(uint8_t id) {
     deviceID = id;
 }
-int32_t PersonalDevice::getLatitude() const {
-    return deviceLatitude;
+
+
+double PersonalDevice::getLatitude() {
+    return gps.location.isValid() ? gps.location.lat() : NAN;
 }
-void PersonalDevice::setLatitude(int32_t latitude) {
+
+void PersonalDevice::setLatitude(double latitude) {
     deviceLatitude = latitude;
 }
-int32_t PersonalDevice::getLongitude() const {
-    return deviceLongitude;
+
+double PersonalDevice::getLongitude() {
+    return gps.location.isValid() ? gps.location.lng() : NAN;
 }
-void PersonalDevice::setLongitude(int32_t longitude) {
+
+void PersonalDevice::setLongitude(double longitude) {
     deviceLongitude = longitude;
 }
-unsigned long PersonalDevice::getSpeed() const {
-    return speed;
+
+double PersonalDevice::getSpeed(){
+    return gps.speed.isValid() ? gps.speed.kmph() : NAN;
 }
-void PersonalDevice::setSpeed(unsigned long speedValue) {
+void PersonalDevice::setSpeed(double speedValue) {
     speed = speedValue;
 }
+
+double PersonalDevice::getCourse() {
+    return gps.course.isValid() ? gps.course.deg() : NAN;
+}
+
+void PersonalDevice::setCourse(double course) {
+    deviceCourse= course;
+}
+
 float PersonalDevice::getAccelerationX() const {
     return accelerationX;
 }
@@ -109,20 +128,7 @@ float PersonalDevice::toRadians(float degree) {
 // Implementação Otimizada (Aproximação Equirretangular)
 float PersonalDevice::calculateDistance(float targetLat, float targetLng) {
     // não faz a corversão de minutos e segundo para graus, usar a biblioteca TinyGPS++ para isso antes de chamar essa função
-    const float R = 6371000.0; // Raio da Terra em metros
-
-    // Converter para radianos (necessário para o cálculo correto)
-    float lat1 = toRadians(-19.96792253900216);
-    float lon1 = toRadians(-43.955467856491474);
-    float lat2 = toRadians(targetLat);
-    float lon2 = toRadians(targetLng);
-
-    // Ajuste da longitude baseada na latitude média (o "achatamento" do mapa)
-    float x = (lon2 - lon1) * cos((lat1 + lat2) / 2.0);
-    float y = lat2 - lat1;
-
-    // Pitágoras simples: Raiz(x² + y²) * Raio
-    float distance = sqrt(x * x + y * y) * R;
+    float distance = gps.distanceBetween(deviceLatitude, deviceLongitude, targetLat, targetLng);
 
     return distance;
 }

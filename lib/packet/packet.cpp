@@ -6,9 +6,14 @@ MonitoringData monitoringPacketData;
 AdvertiseData advertisePacketData;
 
 // --- FUNÇÕES DE MAPEAMENTO ---
-uint8_t packet::mapULToUint8(unsigned long value) {
+uint8_t packet::mapDoubleToUint8(double value) {
     // Mapeamento genérico 0-360 -> 0-255 (ideal para curso)
     return (uint8_t)((value * 255) / 360); 
+}
+
+int32_t packet::mapDoubleToInt32(double value) {
+    // Mapeamento genérico para latitude/longitude em micrograus
+    return (int32_t)(value * 1000000);
 }
 
 float packet::mapUint8ToFloat(uint8_t value) {
@@ -18,22 +23,22 @@ float packet::mapUint8ToFloat(uint8_t value) {
 
 // --- CONSTRUTORES DE PACOTE ---
 
-void packet::safetyPacket(uint8_t ID, uint8_t deviceType, int32_t latitude, int32_t longitude, uint8_t *returnPacket, unsigned long speed, unsigned long course) {
+void packet::safetyPacket(uint8_t ID, uint8_t deviceType, double latitude, double longitude, uint8_t *returnPacket, double speed, double course) {
     SafetyPayload pkt;
 
     pkt.packetType = SAFETY_PACKET; // Usa o define
     pkt.id = ID;
     pkt.deviceType = deviceType;
-    pkt.lat = latitude;
-    pkt.lng = longitude;
+    pkt.lat = mapDoubleToInt32(latitude);
+    pkt.lng = mapDoubleToInt32(longitude);
 
     if (deviceType == VEHICLE_DEVICE) {
         // Assume que speed já foi tratado ou é pequeno o suficiente para caber em uint8
         // Se speed for Centi-Knots (biblioteca), converta antes de chamar essa função!
-        pkt.speed = (uint8_t)speed; 
+        pkt.speed = mapDoubleToUint8(speed); // Usa sua função de mapa
         
         // Usa sua função de mapa para o curso
-        pkt.course = mapULToUint8(course); 
+        pkt.course = mapDoubleToUint8(course); 
     } else {
         pkt.speed = 0;
         pkt.course = 0;
@@ -43,7 +48,7 @@ void packet::safetyPacket(uint8_t ID, uint8_t deviceType, int32_t latitude, int3
     memcpy(returnPacket, &pkt, sizeof(SafetyPayload));
 }
 
-void packet::monitoringPacket(uint8_t ID, uint8_t deviceType, int32_t latitude, int32_t longitude, uint8_t batteryLevel, int32_t last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket) {
+void packet::monitoringPacket(uint8_t ID, uint8_t deviceType, double latitude, double longitude, uint8_t batteryLevel, int32_t last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket) {
     MonitoringPayload pkt;
 
     pkt.packetType = MONITORING_PACKET;
