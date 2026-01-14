@@ -22,6 +22,7 @@ void VehicleDevice::setID(uint8_t id) {
 }
 
 double VehicleDevice::getLatitude(){
+    deviceLatitude = gps.location.lat();
     return deviceLatitude;
 }
 
@@ -31,6 +32,7 @@ void VehicleDevice::setLatitude(double latitude) {
 }
 
 double VehicleDevice::getLongitude(){
+    deviceLongitude = gps.location.lng();
     return deviceLongitude;
 }
 
@@ -54,6 +56,8 @@ double VehicleDevice::getCourse() {
 void VehicleDevice::setCourse(double courseValue) {
     deviceCourse = courseValue;
 }
+
+
 void VehicleDevice::sendSafety() {
     // lora.SpreadingFactor(7);
     // pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);

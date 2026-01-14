@@ -34,6 +34,10 @@ class VehicleDevice {
     float getAccelerationY() const;
     void setAccelerationY(float ay);
 
+    float getReceivedLat();
+    float getReceivedLng();
+
+
     void sendSafety();
     void sendMonitoring();
     bool receive();
@@ -48,6 +52,8 @@ class VehicleDevice {
 
     double getCourse();
     void setCourse(double course);
+    
+    packet pckt;
 
   private:
     uint8_t deviceID;
@@ -58,7 +64,6 @@ class VehicleDevice {
     uint8_t deviceType = PERSONAL_DEVICE;
     int32_t last5positions[5][2];
     uint8_t last5events[5];
-    packet pckt;
     uint8_t safetyPacket[SAFETY_PACKET_SIZE];
     uint8_t monitoringPacket[MONITORING_PACKET_SIZE];
     uint8_t receivedPacket[MONITORING_PACKET_SIZE];
