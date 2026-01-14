@@ -132,3 +132,10 @@ float PersonalDevice::calculateDistance(float targetLat, float targetLng) {
 
     return distance;
 }
+
+float PersonalDevice::getReceivedLat() {
+    return pckt.monitoringData.lat / 100000.0; // Converte de int32_t para float
+}
+float PersonalDevice::getReceivedLng() {
+    return pckt.monitoringData.lng / 100000.0; // Converte de int32_t para float
+}

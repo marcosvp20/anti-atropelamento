@@ -11,11 +11,12 @@ BLEHandle ble(device); // Vincula o Bluetooth ao Crachá
 #define STOPPED_SAFETY_TIMER 5000
 #define MONITORING_TIMER 60000
 
-#define LOCAL_1_LAT  -19.96792253900216
-#define LOCAL_1_LNG  -43.955467856491474
 
-#define LOCAL_2_LAT  -19.96747866279618
-#define LOCAL_2_LNG  -43.955390748973954
+#define LOCAL_1_LAT  -19.968004209495664
+#define LOCAL_1_LNG  -43.955484493415305
+
+// #define LOCAL_2_LAT  -19.96747866279618
+// #define LOCAL_2_LNG  -43.955390748973954
 
 // #define LOCAL_2_LAT  -19.968256996158512
 // #define LOCAL_2_LNG  -43.95160025506842
@@ -53,7 +54,9 @@ void setup() {
 
 void loop() {
     
-    device.receive();
+    if(device.receive()) {
+        Serial.println("Distance between devices: " + String(device.calculateDistance(device.getReceivedLat(), device.getReceivedLng())) + " meters");
+    }
     // IMPORTANTE: Só alteramos o intervalo se ele for >= 1000.
     // Se for menor (ex: 750ms), significa que estamos num "random backoff" esperando o canal liberar,
     // então não podemos forçar de volta para 1s ou 5s agora.
@@ -88,7 +91,6 @@ void loop() {
             //Serial.println("Intervalo atual do Safety Timer: " + String(millis() - lastMillis) + " ms");
             //device.sendSafety();
             device.sendAlert(ALERT_ADVERTISE, 2);
-            Serial.println("Distance calculed between devices: "+ String(device.calculateDistance(LOCAL_2_LAT, LOCAL_2_LNG)) + "m");
             
             safetyTimer.setInterval(STOPPED_SAFETY_TIMER);
             safetyTimer.reset(); 
@@ -119,9 +121,9 @@ void loop() {
 
 
     // --- SIMULATION LOGIC ---
-    if (!speedSimulated && simTimer.isReady()) {
-        device.setSpeed(3.0);
-        Serial.println(">>> Speed set to 3.0 m/s");
-        speedSimulated = true;
-    }
+    // if (!speedSimulated && simTimer.isReady()) {
+    //     device.setSpeed(3.0);
+    //     Serial.println(">>> Speed set to 3.0 m/s");
+    //     speedSimulated = true;
+    // }
 }
