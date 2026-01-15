@@ -46,17 +46,12 @@ void loop() {
     // 3. Recepção e Cálculo de Distância Direto
     if (vehicle.receive()) {
         // Acessamos os dados decodificados diretamente do objeto 'pckt' da classe
-        float latRecebida = vehicle.pckt.safetyData.lat;
-        float lngRecebida = vehicle.pckt.safetyData.lng;
+        float latRecebida = (vehicle.pckt.safetyData.lat/1000000.0);
+        float lngRecebida = (vehicle.pckt.safetyData.lng/1000000.0);
         uint8_t idRecebido = vehicle.pckt.safetyData.ID;
 
         if (gps.location.isValid()) {
-            double distancia = TinyGPSPlus::distanceBetween(
-                gps.location.lat(),
-                gps.location.lng(),
-                latRecebida,
-                lngRecebida
-            );
+            double distancia = vehicle.calculateDistance(latRecebida, lngRecebida);
 
             Serial.print(F("!!! DISPOSITIVO DETECTADO !!! ID: "));
             Serial.print(idRecebido);

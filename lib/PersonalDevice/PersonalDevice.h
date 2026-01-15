@@ -49,6 +49,9 @@ class PersonalDevice {
     double getCourse();
     void setCourse(double course);
 
+    float getReceivedLat();
+    float getReceivedLng();
+
   private:
     uint8_t deviceID;
     double deviceLatitude;

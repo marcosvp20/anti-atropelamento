@@ -102,3 +102,10 @@ void VehicleDevice::sendAlert(uint8_t alertType, uint8_t targetID) {
     pckt.advertisePacket(alertType, targetID, alertPacket);    // Enviar o pacote de alerta
     lora.sendData(alertPacket, sizeof(alertPacket));
 }
+
+float VehicleDevice::calculateDistance(float targetLat, float targetLng) {
+    // não faz a corversão de minutos e segundo para graus, usar a biblioteca TinyGPS++ para isso antes de chamar essa função
+    float distance = gps.distanceBetween(deviceLatitude, deviceLongitude, targetLat, targetLng);
+
+    return distance;
+}

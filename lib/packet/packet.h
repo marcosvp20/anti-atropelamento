@@ -93,8 +93,7 @@ public:
     // Helpers (Mantive se você quiser usar fora, mas internamente o código resolve)
     uint8_t mapDoubleToUint8(double value);
     float mapUint8ToFloat(uint8_t value);
-
-    int32_t mapDoubleToInt32(double value);
+    int32_t mapDoubleToInt32(double coordinate);
 
     SafetyData safetyData;         
     MonitoringData monitoringData;
