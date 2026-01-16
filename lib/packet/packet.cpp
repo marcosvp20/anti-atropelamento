@@ -48,14 +48,14 @@ void packet::safetyPacket(uint8_t ID, uint8_t deviceType, double latitude, doubl
     memcpy(returnPacket, &pkt, sizeof(SafetyPayload));
 }
 
-void packet::monitoringPacket(uint8_t ID, uint8_t deviceType, int32_t latitude, int32_t longitude, uint8_t batteryLevel, int32_t last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket) {
+void packet::monitoringPacket(uint8_t ID, uint8_t deviceType, double latitude, double longitude, uint8_t batteryLevel, int32_t last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket) {
     MonitoringPayload pkt;
 
     pkt.packetType = MONITORING_PACKET;
     pkt.id = ID;
     pkt.deviceType = deviceType;
-    pkt.lat = latitude;
-    pkt.lng = longitude;
+    pkt.lat = mapDoubleToInt32(latitude);
+    pkt.lng = mapDoubleToInt32(longitude);
     pkt.batteryLevel = batteryLevel;
 
     // Copia a matriz de posições inteira de uma vez (seguro pois ambos são int32_t)
@@ -97,8 +97,8 @@ uint8_t packet::decodePacket(uint8_t *receivedPacket) {
 
         Serial.println("ID: " + String(safetyPacketData.ID));
         Serial.println("Device Type: " + String(safetyPacketData.deviceType));
-        Serial.println("Latitude: " + String(safetyPacketData.lat));
-        Serial.println("Longitude: " + String(safetyPacketData.lng));
+        Serial.println("Latitude: " + String(safetyPacketData.lat/1000000.0, 6));
+        Serial.println("Longitude: " + String(safetyPacketData.lng/1000000.0, 6));
 
         if (pkt->deviceType == VEHICLE_DEVICE) {
             safetyPacketData.speed = (float)pkt->speed; // Lê direto
@@ -157,4 +157,11 @@ uint8_t packet::decodePacket(uint8_t *receivedPacket) {
         Serial.println();
     }
     return packetID;
+}
+
+int32_t packet::getLatFromPacket() {
+    return safetyPacketData.lat;
+}
+int32_t packet::getLngFromPacket() {
+    return safetyPacketData.lng;
 }

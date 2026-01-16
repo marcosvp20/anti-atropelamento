@@ -4,6 +4,7 @@
 #include "PersonalDevice.h"
 #include "BLEHandle.h"
 #include "SimpleTimer.h" 
+#include "thingProperties.h"
 PersonalDevice device;
 BLEHandle ble(device); // Vincula o Bluetooth ao Crachá
 
@@ -38,6 +39,11 @@ void setup() {
     device.setAccelerationX(0.5);
     device.setAccelerationY(1.0);
     device.setSpeed(0.0);
+    
+    initProperties();
+    ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+    setDebugMessageLevel(2);
+    ArduinoCloud.printDebugInfo();
 
     ble.begin("CRACHA_LORA_01"); // Inicializa Bluetooth
     Serial.println("Aguardando configuração...");
@@ -53,9 +59,14 @@ void setup() {
 }
 
 void loop() {
-    
+    ArduinoCloud.update();
     if(device.receive()) {
-        Serial.println("Distance between devices: " + String(device.calculateDistance(device.getReceivedLat(), device.getReceivedLng())) + " meters");
+        // Serial.println("Distance between devices: " + String(device.calculateDistance(device.getReceivedLat(), device.getReceivedLng())) + " meters");
+        gpsLocation = {-19.96, -43.95};
+        // gpsLocation = {device.getReceivedLat(), device.getReceivedLng()}; // Exemplo de atualização da localização na nuvem
+        delay(1000);
+        // Serial.println("Received Lat: " + String(device.getReceivedLat(), 6));
+        // Serial.println("Received Lng: " + String(device.getReceivedLng(), 6));
     }
     // IMPORTANTE: Só alteramos o intervalo se ele for >= 1000.
     // Se for menor (ex: 750ms), significa que estamos num "random backoff" esperando o canal liberar,
@@ -90,7 +101,7 @@ void loop() {
             Serial.println("Sending Safety Packet...");
             //Serial.println("Intervalo atual do Safety Timer: " + String(millis() - lastMillis) + " ms");
             //device.sendSafety();
-            device.sendAlert(ALERT_ADVERTISE, 2);
+            //device.sendAlert(ALERT_ADVERTISE, 2);
             
             safetyTimer.setInterval(STOPPED_SAFETY_TIMER);
             safetyTimer.reset(); 

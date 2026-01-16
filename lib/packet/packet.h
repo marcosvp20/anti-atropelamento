@@ -90,6 +90,9 @@ public:
     
     uint8_t decodePacket(uint8_t *receivedPacket);
 
+    int32_t getLatFromPacket();
+    int32_t getLngFromPacket();
+
     // Helpers (Mantive se você quiser usar fora, mas internamente o código resolve)
     uint8_t mapDoubleToUint8(double value);
     float mapUint8ToFloat(uint8_t value);
