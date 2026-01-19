@@ -12,7 +12,14 @@
 
 class VehicleDevice {
   public:
+    void alimentandoGPS();
+
     VehicleDevice();
+
+    int getSatValue();
+    bool getSatValid();
+
+    bool hasLocation();
 
     void setup();
 

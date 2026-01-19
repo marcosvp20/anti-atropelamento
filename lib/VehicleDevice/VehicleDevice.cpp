@@ -8,9 +8,14 @@ VehicleDevice::VehicleDevice()
     }
 }
 
+
 void VehicleDevice::setup() {
     lora.begin();
     lora.SpreadingFactor(7);
+}
+
+bool VehicleDevice::hasLocation() {
+    return gps.location.isValid();
 }
 
 uint8_t VehicleDevice::getID() const {
@@ -22,8 +27,21 @@ void VehicleDevice::setID(uint8_t id) {
 }
 
 double VehicleDevice::getLatitude(){
-    deviceLatitude = gps.location.lat();
-    return deviceLatitude;
+    return gps.location.lat();
+}
+
+int VehicleDevice::getSatValue() {
+    return gps.satellites.value();
+}
+
+bool VehicleDevice::getSatValid() {
+    return gps.satellites.isValid();
+}
+
+void VehicleDevice::alimentandoGPS() {
+    while (SerialGPS.available() > 0) {
+        gps.encode(SerialGPS.read());
+    }
 }
 
 void VehicleDevice::setLatitude(double latitude) {
@@ -59,10 +77,17 @@ void VehicleDevice::setCourse(double courseValue) {
 
 
 void VehicleDevice::sendSafety() {
-    // lora.SpreadingFactor(7);
-    // pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);
     lora.sendData(safetyPacket, SAFETY_PACKET_SIZE);
+
+    Serial.print("Safety packet sent (HEX): ");
+    for (size_t i = 0; i < SAFETY_PACKET_SIZE; i++) {
+        if (safetyPacket[i] < 16) Serial.print('0');
+        Serial.print(safetyPacket[i], HEX);
+        Serial.print(' ');
+    }
+    Serial.println();
 }
+
 void VehicleDevice::sendMonitoring() {
     // lora.SpreadingFactor(9);
     // pckt.monitoringPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, batteryLevel, last5positions, last5events, status, monitoringPacket);
