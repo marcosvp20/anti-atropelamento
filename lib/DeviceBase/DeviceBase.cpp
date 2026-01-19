@@ -17,16 +17,16 @@ uint8_t DeviceBase::getID() const { return deviceID; }
 void DeviceBase::setID(uint8_t id) { deviceID = id; }
 
 double DeviceBase::getLatitude() const { return deviceLatitude; }
-void DeviceBase::setLatitude(double latitude) { deviceLatitude = latitude; }
+void DeviceBase::setLatitude(double latitude) { deviceLatitude = gps.location.lat(); }
 
 double DeviceBase::getLongitude() const { return deviceLongitude; }
-void DeviceBase::setLongitude(double longitude) { deviceLongitude = longitude; }
+void DeviceBase::setLongitude(double longitude) { deviceLongitude = gps.location.lng(); }
 
 double DeviceBase::getSpeed() const { return speed; }
-void DeviceBase::setSpeed(double speedValue) { speed = speedValue; }
+void DeviceBase::setSpeed(double speedValue) { speed = gps.speed.kmph(); }
 
 double DeviceBase::getCourse() const { return deviceCourse; }
-void DeviceBase::setCourse(double courseValue) { deviceCourse = courseValue; }
+void DeviceBase::setCourse(double courseValue) { deviceCourse = gps.course.deg(); }
 
 int DeviceBase::getSatValue() {
     return gps.satellites.value();
