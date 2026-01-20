@@ -1,8 +1,6 @@
-#include <Arduino.h>
 #include <Wire.h>
 #include <U8g2lib.h>
 
-#include "LoRaBoards.h"
 #include "VehicleDevice.h"
 #include "SimpleTimer.h"
 #include "display.h"
@@ -50,9 +48,9 @@ void loop() {
     Serial.print(F("Transmitindo pacote de seguranca... "));
 
     if (vehicle.hasLocation()) {
-      vehicle.setLatitude(vehicle.getLatitude());
-      vehicle.setLongitude(vehicle.getLongitude());
-      vehicle.setSpeed(vehicle.getSpeed());
+      vehicle.setLatitude();
+      vehicle.setLongitude();
+      vehicle.setSpeed();
       if (!vehicle.isChannelBusy(SAFETY_CHANNEL)) {
         vehicle.sendSafety();
       } else {

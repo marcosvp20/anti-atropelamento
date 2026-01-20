@@ -101,7 +101,7 @@ uint8_t packet::decodePacket(uint8_t *receivedPacket) {
         Serial.println("Longitude: " + String(safetyPacketData.lng));
 
         if (pkt->deviceType == VEHICLE_DEVICE) {
-            safetyPacketData.speed = (float)pkt->speed; // Lê direto
+            safetyPacketData.speed = mapUint8ToFloat(pkt->speed); // Lê direto
             safetyPacketData.course = mapUint8ToFloat(pkt->course); // Desmapeia
             
             Serial.println("Speed: " + String(safetyPacketData.speed));
