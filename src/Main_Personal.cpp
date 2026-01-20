@@ -62,8 +62,7 @@ void loop() {
     ArduinoCloud.update();
     if(device.receive()) {
         // Serial.println("Distance between devices: " + String(device.calculateDistance(device.getReceivedLat(), device.getReceivedLng())) + " meters");
-        gpsLocation = {-19.96, -43.95};
-        // gpsLocation = {device.getReceivedLat(), device.getReceivedLng()}; // Exemplo de atualização da localização na nuvem
+        gpsLocation = {device.getReceivedLat(), device.getReceivedLng()}; // Exemplo de atualização da localização na nuvem
         delay(1000);
         // Serial.println("Received Lat: " + String(device.getReceivedLat(), 6));
         // Serial.println("Received Lng: " + String(device.getReceivedLng(), 6));

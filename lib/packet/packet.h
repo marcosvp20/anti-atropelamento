@@ -89,9 +89,15 @@ public:
     void advertisePacket(uint8_t ID, uint8_t deviceID, uint8_t *returnPacket);
     
     uint8_t decodePacket(uint8_t *receivedPacket);
-
-    int32_t getLatFromPacket();
-    int32_t getLngFromPacket();
+    
+    uint8_t getPacketID();
+    uint8_t getDeviceID();
+    uint8_t getDeviceType();
+    int32_t getLat();
+    int32_t getLng();
+    float getSpeed();
+    float getCourse();
+    uint8_t getAdvertiseID();
 
     // Helpers (Mantive se você quiser usar fora, mas internamente o código resolve)
     uint8_t mapDoubleToUint8(double value);

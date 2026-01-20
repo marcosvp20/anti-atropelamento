@@ -159,9 +159,27 @@ uint8_t packet::decodePacket(uint8_t *receivedPacket) {
     return packetID;
 }
 
-int32_t packet::getLatFromPacket() {
+uint8_t packet::getPacketID() {
+    return safetyPacketData.packetID;
+}
+uint8_t packet::getDeviceID() {
+    return safetyPacketData.ID;
+}
+uint8_t packet::getDeviceType() {
+    return safetyPacketData.deviceType;
+}
+int32_t packet::getLat() {
     return safetyPacketData.lat;
 }
-int32_t packet::getLngFromPacket() {
+int32_t packet::getLng() {
     return safetyPacketData.lng;
+}
+float packet::getSpeed() {
+    return safetyPacketData.speed;
+}
+float packet::getCourse() {
+    return safetyPacketData.course;
+}
+uint8_t packet::getAdvertiseID() {
+    return advertisePacketData.ID;
 }
