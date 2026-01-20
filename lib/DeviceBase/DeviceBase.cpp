@@ -17,16 +17,16 @@ uint8_t DeviceBase::getID() const { return deviceID; }
 void DeviceBase::setID(uint8_t id) { deviceID = id; }
 
 double DeviceBase::getLatitude() const { return deviceLatitude; }
-void DeviceBase::setLatitude(double latitude) { deviceLatitude = gps.location.lat(); }
+void DeviceBase::setLatitude() { deviceLatitude = gps.location.lat(); }
 
 double DeviceBase::getLongitude() const { return deviceLongitude; }
-void DeviceBase::setLongitude(double longitude) { deviceLongitude = gps.location.lng(); }
+void DeviceBase::setLongitude() { deviceLongitude = gps.location.lng(); }
 
 double DeviceBase::getSpeed() const { return speed; }
-void DeviceBase::setSpeed(double speedValue) { speed = gps.speed.kmph(); }
+void DeviceBase::setSpeed() { speed = gps.speed.kmph(); }
 
 double DeviceBase::getCourse() const { return deviceCourse; }
-void DeviceBase::setCourse(double courseValue) { deviceCourse = gps.course.deg(); }
+void DeviceBase::setCourse() { deviceCourse = gps.course.deg(); }
 
 int DeviceBase::getSatValue() {
     return gps.satellites.value();
@@ -35,6 +35,9 @@ int DeviceBase::getSatValue() {
 bool DeviceBase::getSatValid() {
     return gps.satellites.isValid();
 }
+
+double DeviceBase::getHdop() const { return deviceHdop; }
+void DeviceBase::setHdop() { deviceHdop = gps.hdop.hdop(); }
 
 
 void DeviceBase::sendSafety() {
@@ -76,8 +79,8 @@ void DeviceBase::updateFromBluetooth(String rawData) {
         float novaLng = rawData.substring(secondSemi + 1).toFloat();
 
         setID(novoID);
-        setLatitude(novaLat);
-        setLongitude(novaLng);
+        setLatitude();
+        setLongitude();
         Serial.println("\n>>> Dados atualizados via BLE.");
     }
 }

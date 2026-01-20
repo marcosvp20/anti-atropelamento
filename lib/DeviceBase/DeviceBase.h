@@ -21,16 +21,16 @@ public:
     void setID(uint8_t id);
 
     double getLatitude() const;
-    void setLatitude(double latitude);
+    void setLatitude();
 
     double getLongitude() const;
-    void setLongitude(double longitude);
+    void setLongitude();
 
     double getSpeed() const;
-    void setSpeed(double speedValue);
+    void setSpeed();
 
     double getCourse() const;
-    void setCourse(double courseValue);
+    void setCourse();
 
     void sendSafety();
     void sendMonitoring();
@@ -47,6 +47,9 @@ public:
     int getSatValue();
 
     bool getSatValid();
+
+    double getHdop() const;
+    void setHdop();
 
 protected:
 
@@ -73,7 +76,7 @@ protected:
 
     double speed = 0.0;
     double deviceCourse = 0.0;
-
+    double deviceHdop = 0.0;
 
     packet pckt;
     CMSLoRa lora;
