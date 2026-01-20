@@ -94,3 +94,22 @@ void DeviceBase::sendAlert(uint8_t alertType, uint8_t targetID) {
     pckt.advertisePacket(alertType, targetID, alertPacket);
     lora.sendData(alertPacket, sizeof(alertPacket));
 }
+
+double DeviceBase::getRadius(int index) const {
+    if (index >=0 && index < 3) {
+        return deviceRadius[index];
+    }
+    return 0.0;
+}
+
+void DeviceBase::setRadius(double hdop) {
+    for (int i = 0; i < 3; i++) {
+        if (i == 0) {
+            deviceRadius[i] = hdop * 1.5;
+        } else if (i == 1) {
+            deviceRadius[i] = (hdop * 1.5) + 9.0;
+        } else if (i == 2) {
+            deviceRadius[i] = (hdop * 1.5) + 25.0;
+        }
+    }
+}

@@ -51,12 +51,15 @@ public:
     double getHdop() const;
     void setHdop();
 
+    double getRadius(int index) const;
+    void setRadius(double hdop);
+
 protected:
 
     virtual void buildSafetyPacket() = 0;
     virtual void buildMonitoringPacket() = 0;
 
-    virtual void onReceiveDecoded() {}    
+    virtual void onReceiveDecoded() {}
     virtual uint8_t safetySF() const { return 7; }
     virtual uint8_t monitoringSF() const { return 9; }
 
@@ -77,6 +80,7 @@ protected:
     double speed = 0.0;
     double deviceCourse = 0.0;
     double deviceHdop = 0.0;
+    double deviceRadius[3] = {0.0, 0.0, 0.0};
 
     packet pckt;
     CMSLoRa lora;
