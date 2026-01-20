@@ -90,6 +90,15 @@ public:
     
     uint8_t decodePacket(uint8_t *receivedPacket);
 
+    uint8_t getPacketID();
+    uint8_t getDeviceID();
+    uint8_t getDeviceType();
+    int32_t getLat();
+    int32_t getLng();
+    float getSpeed();
+    float getCourse();
+    uint8_t getAdvertiseID();
+
     // Helpers (Mantive se você quiser usar fora, mas internamente o código resolve)
     uint8_t mapDoubleToUint8(double value);
     float mapUint8ToFloat(uint8_t value);
