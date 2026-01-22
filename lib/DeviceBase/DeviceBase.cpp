@@ -13,6 +13,12 @@ void DeviceBase::setup() {
     lora.SpreadingFactor(7);
 }
 
+void DeviceBase::alimentandoGPS() {
+    while (SerialGPS.available() > 0) {
+        gps.encode(SerialGPS.read());
+    }
+}
+
 uint8_t DeviceBase::getID() const { return deviceID; }
 void DeviceBase::setID(uint8_t id) { deviceID = id; }
 
@@ -103,13 +109,25 @@ double DeviceBase::getRadius(int index) const {
 }
 
 void DeviceBase::setRadius(double hdop) {
-    for (int i = 0; i < 3; i++) {
-        if (i == 0) {
-            deviceRadius[i] = hdop * 1.5;
-        } else if (i == 1) {
-            deviceRadius[i] = (hdop * 1.5) + 9.0;
-        } else if (i == 2) {
-            deviceRadius[i] = (hdop * 1.5) + 25.0;
+    if (deviceType == 1) {
+        for (int i = 0; i < 3; i++) {
+            if (i == 0) {
+                deviceRadius[i] = hdop * 1.5;
+            } else if (i == 1) {
+                deviceRadius[i] = (hdop * 1.5) + 9.0;
+            } else if (i == 2) {
+                deviceRadius[i] = (hdop * 1.5) + 25.0;
+            }
+        }
+    } else if (deviceType == 2) {
+        for (int i = 0; i < 3; i++) {
+            if (i == 0) {
+                deviceRadius[i] = hdop * 1.5;
+            } else if (i == 1) {
+                deviceRadius[i] = (hdop * 1.5) + 1.0;
+            } else if (i == 2) {
+                deviceRadius[i] = (hdop * 1.5) + 2.0;
+            }
         }
     }
 }

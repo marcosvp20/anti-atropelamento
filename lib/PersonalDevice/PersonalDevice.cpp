@@ -1,7 +1,7 @@
 #include "PersonalDevice.h"
 
 PersonalDevice::PersonalDevice() : DeviceBase() {
-    deviceType = PERSONAL_DEVICE;
+    deviceType = 2;
 }
 
 void PersonalDevice::buildSafetyPacket() {

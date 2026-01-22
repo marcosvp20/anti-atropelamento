@@ -17,6 +17,8 @@ public:
 
     virtual void setup();
 
+    void alimentandoGPS();
+
     uint8_t getID() const;
     void setID(uint8_t id);
 
