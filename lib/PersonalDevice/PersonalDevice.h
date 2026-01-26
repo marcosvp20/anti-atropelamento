@@ -12,6 +12,8 @@ public:
     double getSpeedLive() { return gps.speed.isValid() ? gps.speed.kmph() : NAN; }
     double getCourseLive() { return gps.course.isValid() ? gps.course.deg() : NAN; }
 
+    int isValidSend(float targetLat, float targetLng);
+
 protected:
     void buildSafetyPacket() override;
     void buildMonitoringPacket() override;

@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <U8g2lib.h>
-#include "packet.h"  
+#include "packet.h"
 
 class Display {
 public:
@@ -9,31 +9,22 @@ public:
 
   void begin();
 
-  // Atualização
   void setRefreshMs(uint32_t ms);
-  void tick(); 
+  void tick();
 
-  // escolhe qual tela mostrar
-  enum Screen : uint8_t { SCREEN_GPS, SCREEN_SAFETY, SCREEN_MONITORING, SCREEN_ADVERTISE, SCREEN_MESSAGE };
-
+  enum Screen : uint8_t { SCREEN_GPS, SCREEN_SAFETY };
   void setScreen(Screen s);
 
   // Alimenta dados
   void setSafety(const SafetyData &d);
-  void setMonitoring(const MonitoringData &d);
-  void setAdvertise(const AdvertiseData &d);
 
-
-  // passa os valores 
-  void setGpsStatus(bool satValid, uint32_t sats, bool fixOk, double lat, double lng, float hdop, float speed);
-
-  // Mensagem genérica
-  void setMessage(const String &title, const String &l1, const String &l2 = "", const String &l3 = "");
+  // GPS status
+  void setGpsStatus(bool satValid, uint32_t sats, bool fixOk,
+                    double lat, double lng, float hdop, float speed);
 
 private:
   U8G2 &oled;
 
-  // timing do tick()
   uint32_t refreshMs = 200;
   uint32_t lastDisp = 0;
 
@@ -41,8 +32,6 @@ private:
 
   // caches
   SafetyData sData{};
-  MonitoringData mData{};
-  AdvertiseData aData{};
 
   struct {
     bool satValid = false;
@@ -54,12 +43,11 @@ private:
     float speed = 0;
   } gps;
 
-  String msgTitle, msg1, msg2, msg3;
+  // controle do “último pacote recebido” (SAFETY)
+  uint32_t lastSafetyRxMs = 0;
+  uint32_t safetyRxCount  = 0;
+  uint8_t  lastSafetySenderId = 0;
 
-  // draw functions (equivalentes às “funcionalidades”)
   void drawGpsScreen();
   void drawSafetyScreen();
-  void drawMonitoringScreen();
-  void drawAdvertiseScreen();
-  void drawMessageScreen();
 };
