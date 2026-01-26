@@ -7,10 +7,6 @@ class VehicleDevice : public DeviceBase {
 public:
     VehicleDevice();
 
-    bool hasLocation() { return gps.location.isValid(); }
-    int  getSatValue() { return gps.satellites.value(); }
-    bool getSatValid() { return gps.satellites.isValid(); }
-
     void buildDynamicBubble360(
         float headingDeg,
         float baseRadius,

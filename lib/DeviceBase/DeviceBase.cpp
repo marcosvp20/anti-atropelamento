@@ -131,3 +131,22 @@ void DeviceBase::setRadius(double hdop) {
         }
     }
 }
+
+bool DeviceBase::hasLocation() {
+    return gps.location.isValid();
+}
+
+int DeviceBase::getSatValue() {
+    return gps.satellites.value();
+}
+
+bool DeviceBase::getSatValid() {
+    return gps.satellites.isValid();
+}
+
+float DeviceBase::getReceivedLat() {
+    return pckt.getLat() / 1000000.0; 
+}
+float DeviceBase::getReceivedLng() {
+    return pckt.getLng() / 1000000.0; 
+}

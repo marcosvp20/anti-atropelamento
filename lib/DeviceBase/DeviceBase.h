@@ -56,6 +56,13 @@ public:
     double getRadius(int index) const;
     void setRadius(double hdop);
 
+    bool hasLocation() {};
+    int  getSatValue() {};
+    bool getSatValid() {};
+
+    float getReceivedLat() {};
+    float getReceivedLng() {};
+
 protected:
 
     virtual void buildSafetyPacket() = 0;
