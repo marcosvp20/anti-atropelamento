@@ -44,13 +44,13 @@ void loop() {
   bool fixOk = hasFixSimple();
   bool satValid = vehicle.getSatValid();
   uint32_t sats = satValid ? vehicle.getSatValue() : 0;
+  vehicle.setHdop();
   
   if (fixOk) {
     vehicle.setLatitude();
     vehicle.setLongitude();
     vehicle.setSpeed();
     vehicle.setCourse();
-    vehicle.setHdop();
     vehicle.setRadius(vehicle.getHdop());
   }
 
@@ -80,6 +80,7 @@ Implementação do buildDynamicBubble360
       exponent
     );
 
+    Serial.println("Valores do Bubble360:");
     Serial.printf("base=%.1f extra=%.1f head=%.1f",
                   baseRadius, maxExtra, headingDeg);
 
@@ -117,11 +118,26 @@ Implementação do buildDynamicBubble360
 
     /*
     ###########################
+    RETORNA QUAL A DIREÇÃO DA PESSOA EM RELAÇÃO AO CAMINHÃO
+    ########################### 
+    */
+
+    float angPessoa = vehicle.bearingFromTruckDeg(
+      vehicle.getLatitude(), vehicle.getLongitude(),
+      targetLat, targetLng
+    );
+
+
+    /*
+    ###########################
     Print com todos os dados para debug
     ###########################
     */
-
+    Serial.println("\n");
+    Serial.println("Valores do Veículo:");
     Serial.printf("hdop=%.2f sats=%lu\n lat=%.6f lon=%.6f speed=%.1f km/h course=%.1f deg\n",
                   vehicle.getHdop(), (unsigned long)sats, vehicle.getLatitude(), vehicle.getLongitude(), vehicle.getSpeed(), vehicle.getCourse());
+
+    delay(3000);
 }
 

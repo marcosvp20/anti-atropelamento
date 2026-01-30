@@ -126,9 +126,16 @@ Implementação do buildDynamicBubble360
       vehicle.getLatitude(), vehicle.getLongitude(),
       targetLat, targetLng
     );
-
    
+    float radiusAtPersona = vehicle.sectionRadiusAtPersona(angPessoa);
 
+    float distanceToPersona = vehicle.calculateDistance(targetLat, targetLng);
+
+    if (distanceToPersona <= radiusAtPersona) {
+      Serial.println("ALERTA: Pessoa dentro da zona de perigo!");
+    } else {
+      Serial.println("Pessoa fora da zona de perigo.");
+    }
 
     /*
     ###########################

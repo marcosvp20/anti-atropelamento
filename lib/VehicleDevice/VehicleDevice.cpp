@@ -1,5 +1,7 @@
 #include "VehicleDevice.h"
 
+VehicleDevice::PeerInfo VehicleDevice::peers[256];
+
 static inline int circularDistDeg(int a, int b) {
     int d = abs(a - b);
     return (d > 180) ? (360 - d) : d;

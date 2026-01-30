@@ -15,6 +15,14 @@ public:
         float exponent
     );
 
+    struct PeerInfo {
+        bool     valid = false;
+        float    distance_m = 0.0f;
+        uint32_t lastSeenMs = 0;
+    };
+
+    
+
     const float* getBubble360() const { return bubble360_; }
 
     float getBubbleAt(int deg) const { return bubble360_[(deg % 360 + 360) % 360]; }
@@ -30,7 +38,8 @@ protected:
 
 private:
     float bubble360_[360];
-
+    static PeerInfo peers[256];
 };
 
 #endif
+
