@@ -14,11 +14,25 @@ void PersonalDevice::buildMonitoringPacket() {
 }
 
 int PersonalDevice::isValidSend(float targetLat, float targetLng) {
-  if (!gps.location.isValid()) return 0;
+
+  const uint32_t RESET_MS = 5000;
+  uint32_t agora = millis();
+  if (agora - lastMinResetMs >= RESET_MS) {
+    minDistance = 1e9;
+    lastMinResetMs = agora;
+  }
 
   float distance = calculateDistance(targetLat, targetLng);
 
-  if (distance < 30.0f) return 1;
-  if (distance <= 50.0f) return 2;
-  return 3;
+  if (distance < minDistance) {
+    minDistance = distance;
+  }
+
+  if (minDistance < 30.0f) {
+    return 1;
+  } else if (minDistance <= 50.0f) {
+    return 2;
+  } else {  
+    return 3;
+  }
 }

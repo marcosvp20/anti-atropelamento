@@ -17,6 +17,10 @@ public:
 protected:
     void buildSafetyPacket() override;
     void buildMonitoringPacket() override;
+
+private:
+    float minDistance = 100.0f;
+    uint32_t lastMinResetMs = 0;
 };
 
 #endif
