@@ -19,6 +19,9 @@ public:
 
     float getBubbleAt(int deg) const { return bubble360_[(deg % 360 + 360) % 360]; }
 
+    float bearingFromTruckDeg(float truckLat, float truckLng, float targetLat, float targetLng);
+
+    float sectionRadiusAtPersona(float angPersona);
 
 protected:
     void buildSafetyPacket() override;

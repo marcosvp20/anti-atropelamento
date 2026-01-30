@@ -64,3 +64,40 @@ void VehicleDevice::buildDynamicBubble360(
 
     //vehicle.buildDynamicBubble360(heading, 8.0f, 12.0f, 45, 2.0f);
 }
+
+
+/*
+###########################
+CÁLCULO DE DIREÇÃO ENTRE CAMINHÃO E PESSOA
+###########################
+*/
+static inline float wrap360(float a) {
+  while (a < 0) a += 360.0f;
+  while (a >= 360.0f) a -= 360.0f;
+  return a;
+}
+
+float bearingFromTruckDeg(double truckLat, double truckLng,
+                          double personLat, double personLng) {
+
+  const double R = 6371000.0;
+
+  double lat1 = truckLat * DEG_TO_RAD;
+  double lat2 = personLat * DEG_TO_RAD;
+
+  double dLat = (personLat - truckLat) * DEG_TO_RAD;
+  double dLon = (personLng - truckLng) * DEG_TO_RAD;
+
+  double dy = dLat * R;
+  double dx = dLon * R * cos((lat1 + lat2) * 0.5);
+
+  float ang = (float)(atan2(dx, dy) * RAD_TO_DEG);
+  return wrap360(ang);
+}
+
+float VehicleDevice::sectionRadiusAtPersona(float angPersona) {
+    int deg = (int)lroundf(angPersona);
+    deg = (deg % 360 + 360) % 360;
+    float r = getBubbleAt(deg);
+    return r;
+}
