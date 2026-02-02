@@ -143,3 +143,7 @@ float DeviceBase::getReceivedLat() {
 float DeviceBase::getReceivedLng() {
     return pckt.getLng() / 1000000.0; 
 }
+
+uint8_t DeviceBase::getReceivedID() {
+    return pckt.getDeviceID();
+}

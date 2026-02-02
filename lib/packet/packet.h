@@ -53,6 +53,7 @@ extern struct AdvertiseData {
 struct __attribute__((packed)) SafetyPayload {
     uint8_t packetType;
     uint8_t id;
+    uint8_t destId;
     uint8_t deviceType;
     int32_t lat;
     int32_t lng;
@@ -92,6 +93,7 @@ public:
 
     uint8_t getPacketID();
     uint8_t getDeviceID();
+    uint8_t getDestId();
     uint8_t getDeviceType();
     int32_t getLat();
     int32_t getLng();

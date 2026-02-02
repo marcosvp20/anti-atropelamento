@@ -61,6 +61,8 @@ public:
     float getReceivedLat();
     float getReceivedLng();
 
+    uint8_t getReceivedID();
+
 protected:
 
     virtual void buildSafetyPacket() = 0;
@@ -72,6 +74,7 @@ protected:
 
 protected:
     uint8_t deviceID = 0;
+    uint8_t destId = 0;
     double deviceLatitude = 0.0;
     double deviceLongitude = 0.0;
     uint8_t batteryLevel = 100;
