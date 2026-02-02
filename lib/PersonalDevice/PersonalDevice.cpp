@@ -1,4 +1,5 @@
 #include "PersonalDevice.h"
+
 PersonalDevice::PersonalDevice()
     : deviceID(0), deviceLatitude(0.0), deviceLongitude(0.0), batteryLevel(100), status(0) {
     for (int i = 0; i < 5; i++) {
