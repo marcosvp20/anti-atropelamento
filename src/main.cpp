@@ -21,11 +21,6 @@ VehicleDevice vehicle;
 
 mainFunctions MF;
 
-// função que verica se fix ja é true, ou seja, se o GPS ja tem um valor válido
-static inline bool hasFixSimple() {
-  return vehicle.hasLocation() && vehicle.getSatValid() && vehicle.getHdop() <= 2.0;
-}
-
 void setup() {
   Serial.begin(115200);
   delay(200);
@@ -43,17 +38,17 @@ void setup() {
 
 void loop() {
 
-  MF.SetVehicleConst(vehicle);
+  //MF.SetVehicleConst(vehicle);
 
-  if (safetyTimer.isReady()) {
-    if (!vehicle.isChannelBusy(SAFETY_CHANNEL)) {
-      vehicle.sendSafety();
-      Serial.println("Pacote enviado.");
-      Serial.println("Device ID: " + String(vehicle.getID()));
-      Serial.println("\n");
-    }
-    safetyTimer.reset();
-  }
+  //if (safetyTimer.isReady()) {
+  //  if (!vehicle.isChannelBusy(SAFETY_CHANNEL)) {
+  //    vehicle.sendSafety();
+  //    Serial.println("Pacote enviado.");
+  //    Serial.println("Device ID: " + String(vehicle.getID()));
+  //    Serial.println("\n");
+  //  }
+  //  safetyTimer.reset();
+  //}
 
   /*
   ###########################
@@ -67,6 +62,5 @@ void loop() {
       Serial.println("\n");
   }
  
-    delay(3000);
 }
 
