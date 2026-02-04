@@ -11,6 +11,7 @@ DeviceBase::DeviceBase() {
 void DeviceBase::setup() {
     lora.begin();
     lora.SpreadingFactor(7);
+    lora.receiveData(receivedPacket, 0, 0);
 }
 
 void DeviceBase::alimentandoGPS() {

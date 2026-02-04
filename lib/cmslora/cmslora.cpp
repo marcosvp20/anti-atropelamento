@@ -66,55 +66,51 @@ void CMSLoRa::begin() {
   radio.setWhitening(false);
 }
 
+// Em cmslora.cpp
+
 void CMSLoRa::sendData(unsigned char* data, size_t size) {
   radio.standby(); 
   sendDone = false;
 
-  int transmissionState = radio.transmit(data, size); 
+  int transmissionState = radio.transmit(data, size);
 
   if(transmissionState != RADIOLIB_ERR_NONE) {
      Serial.print(F("[cmsLoRa] Erro envio: "));
      Serial.println(transmissionState);
   }
-  
-  receiveDone = false;
+
+  receiveDone = false; 
   radio.startReceive(); 
 }
 
 bool CMSLoRa::receiveData(unsigned char* packetBuffer, size_t bufferSize, unsigned long timeOut){
-    receiveDone = false;
-  
-    memset(packetBuffer, 0, bufferSize);
+    
+    if (receiveDone) {
+        receiveDone = false;
 
-    radio.startReceive(); 
-    
-    unsigned long startTime = millis();
-    
-    while (!receiveDone) {
-        if (millis() - startTime > timeOut) {
-            
-            radio.standby();
+        size_t len = radio.getPacketLength();
+        
+      
+        if (len == 0) {
+             radio.startReceive(); 
+             return false;
+        }
+
+        if (len > bufferSize) len = bufferSize; 
+
+        int state = radio.readData(packetBuffer, len);
+
+        
+        radio.startReceive(); 
+
+        if(state == RADIOLIB_ERR_NONE){
+            return true;
+        } else {
             return false;
         }
-        yield();
     }
-
     
-    size_t len = radio.getPacketLength();
-    if (len == 0 || len > bufferSize) {
-      
-        return false;
-    }
-
-    int state = radio.readData(packetBuffer, len);
-
-    if(state == RADIOLIB_ERR_NONE){
-      return true;
-    } else {
-      Serial.print("[cmsLoRa] Erro ao ler dados: ");
-      Serial.println(state);
-      return false;
-    }
+    return false;
 }
 
 bool CMSLoRa::isChannelBusy()
