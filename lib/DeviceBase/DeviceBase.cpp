@@ -60,9 +60,15 @@ void DeviceBase::sendMonitoring() {
 }
 
 bool DeviceBase::receive() {
-    lora.SpreadingFactor(safetySF());
-    if (lora.receiveData(receivedPacket, MONITORING_PACKET_SIZE, 100)) {
-        pckt.decodePacket(receivedPacket);
+
+    if (lora.receiveData(receivedPacket, MONITORING_PACKET_SIZE, 100)) { 
+        
+        uint8_t result = pckt.decodePacket(receivedPacket, this->deviceType);
+        
+        if (result == 0) {
+            return false; 
+        }
+
         onReceiveDecoded();
         return true;
     }

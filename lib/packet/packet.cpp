@@ -78,11 +78,15 @@ void packet::advertisePacket(uint8_t ID, uint8_t deviceID, uint8_t *returnPacket
 
 // --- DECODIFICADOR (RX) ---
 
-uint8_t packet::decodePacket(uint8_t *receivedPacket) {
+uint8_t packet::decodePacket(uint8_t *receivedPacket, uint8_t myDeviceType) {
     uint8_t packetID = receivedPacket[0];
-    
+    uint8_t packetType = receivedPacket[2];
     _lastDecodedPacketType = packetID; 
 
+    if (packetType == myDeviceType){
+        Serial.println("Ignorando pacote do mesmo tipo." + String(packetType) + " " + String(myDeviceType));
+        return 0;
+    }
     if (packetID == SAFETY_PACKET) {
         SafetyPayload *pkt = (SafetyPayload*)receivedPacket;
 

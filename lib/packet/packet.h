@@ -101,7 +101,7 @@ public:
     void advertisePacket(uint8_t ID, uint8_t deviceID, uint8_t *returnPacket);
 
     // Decodificação (RX)
-    uint8_t decodePacket(uint8_t *receivedPacket);
+    uint8_t decodePacket(uint8_t *receivedPacket, uint8_t myDeviceType);
 
     // Getters
     uint8_t getPacketID();

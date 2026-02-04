@@ -18,7 +18,7 @@
 VehicleDevice vehicle;
 mainFunctions MF;
 
-SimpleTimer st(4000);
+SimpleTimer st(3000);
 
 unsigned long jitterTargetTime = 0;
 bool waitingToSend = false;
@@ -56,11 +56,13 @@ void loop() {
 
   // ===================== TX slot =====================
   if (waitingToSend && millis() >= jitterTargetTime) {
+    if (!vehicle.isChannelBusy(SAFETY_CHANNEL)) {
     vehicle.sendSafety();
     Serial.println("Pacote enviado");
     Serial.println("Device ID: " + String(vehicle.getID()));
     Serial.println();
 
     waitingToSend = false; 
+    }
   }
 }
