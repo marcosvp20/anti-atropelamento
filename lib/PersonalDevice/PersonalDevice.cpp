@@ -5,7 +5,7 @@ PersonalDevice::PersonalDevice() : DeviceBase() {
 }
 
 void PersonalDevice::buildSafetyPacket() {
-    pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket);
+  pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket, 0.0, 0.0);
 }
 
 void PersonalDevice::buildMonitoringPacket() {

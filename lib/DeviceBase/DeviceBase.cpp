@@ -47,6 +47,11 @@ void DeviceBase::setHdop() { deviceHdop = gps.hdop.hdop(); }
 
 
 void DeviceBase::sendSafety() {
+    double currentSpeed = (deviceType == 1) ? speed : 0.0;
+    double currentCourse = (deviceType == 1) ? deviceCourse : 0.0;
+
+    pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket, currentSpeed, currentCourse);
+
     lora.sendData(safetyPacket, SAFETY_PACKET_SIZE);
 }
 
@@ -56,7 +61,7 @@ void DeviceBase::sendMonitoring() {
 
 bool DeviceBase::receive() {
     lora.SpreadingFactor(safetySF());
-    if (lora.receiveData(receivedPacket, MONITORING_PACKET_SIZE, 1000)) {
+    if (lora.receiveData(receivedPacket, MONITORING_PACKET_SIZE, 100)) {
         pckt.decodePacket(receivedPacket);
         onReceiveDecoded();
         return true;

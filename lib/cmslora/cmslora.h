@@ -104,14 +104,14 @@ class CMSLoRa {
   * @brief Função a ser passada como parâmetro para o callback de envio
   *   
  */
-    static void onSendDone(void);
+    static void IRAM_ATTR onSendDone(void);
     /**
   * @brief Função a ser passada como parâmetro para o callback de dado enviado
   *   
  */
-    static void onReceiveDone(void);
+    static void IRAM_ATTR onReceiveDone(void);
 
-    static void onOperationDone(void);
+    static void IRAM_ATTR onOperationDone(void);
     SPIClass spiLoRa = SPIClass(HSPI);
     Module* module;
     SX1262 radio;

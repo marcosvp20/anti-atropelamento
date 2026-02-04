@@ -26,9 +26,9 @@ void VehicleDevice::buildMonitoringPacket() {
 
 void VehicleDevice::onReceiveDecoded() {
     Serial.println("Received Packet:");
-    Serial.print("ID: "); Serial.println(pckt.safetyData.ID);
-    Serial.print("Latitude: "); Serial.println(pckt.safetyData.lat, 6);
-    Serial.print("Longitude: "); Serial.println(pckt.safetyData.lng, 6);
+    Serial.print("ID: "); Serial.println(pckt.getDeviceID());
+    Serial.print("Latitude: "); Serial.println(pckt.getLat(), 6);
+    Serial.print("Longitude: "); Serial.println(pckt.getLng(), 6);
 }
 
 void VehicleDevice::buildDynamicBubble360(
