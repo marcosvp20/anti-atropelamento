@@ -25,7 +25,7 @@ float packet::mapUint8ToFloat(uint8_t value) {
 
 // --- CONSTRUTORES DE PACOTE (TX) ---
 
-void packet::safetyPacket(uint8_t ID, uint8_t deviceType, double latitude, double longitude, uint8_t *returnPacket, double speed, double course) {
+void packet::safetyPacket(uint8_t ID, uint8_t deviceType, double latitude, double longitude, uint8_t *returnPacket, double speed, double course, double hdop) {
     SafetyPayload pkt;
     // memset garante que não vai sujeira de memória
     memset(&pkt, 0, sizeof(SafetyPayload));
@@ -35,6 +35,7 @@ void packet::safetyPacket(uint8_t ID, uint8_t deviceType, double latitude, doubl
     pkt.deviceType = deviceType;
     pkt.lat = mapDoubleToInt32(latitude);
     pkt.lng = mapDoubleToInt32(longitude);
+    pkt.hdop = mapDoubleToUint8(hdop);
 
     if (deviceType == VEHICLE_DEVICE) {
         pkt.speed = mapDoubleToUint8(speed);
@@ -81,6 +82,9 @@ void packet::advertisePacket(uint8_t ID, uint8_t deviceID, uint8_t *returnPacket
 uint8_t packet::decodePacket(uint8_t *receivedPacket, uint8_t myDeviceType) {
     uint8_t packetID = receivedPacket[0];
     uint8_t packetType = receivedPacket[2];
+    int32_t longitude = receivedPacket[5];
+
+
     _lastDecodedPacketType = packetID; 
 
     if (packetType == myDeviceType){
@@ -95,7 +99,7 @@ uint8_t packet::decodePacket(uint8_t *receivedPacket, uint8_t myDeviceType) {
         safetyPacketData.deviceType = pkt->deviceType;
         safetyPacketData.lat = pkt->lat;
         safetyPacketData.lng = pkt->lng;
-
+        safetyPacketData.hdop = mapUint8ToFloat(pkt->hdop);
         
         if (pkt->deviceType == VEHICLE_DEVICE) {
             safetyPacketData.speed = mapUint8ToFloat(pkt->speed);
@@ -160,18 +164,6 @@ uint8_t packet::getDeviceType() {
     return 0;
 }
 
-int32_t packet::getLat() {
-    if (_lastDecodedPacketType == SAFETY_PACKET) return safetyPacketData.lat;
-    // Atenção: Monitoring usa double, Safety usa int32 mapeado. 
-    // Adapte conforme sua necessidade de retorno.
-    return 0; 
-}
-
-int32_t packet::getLng() {
-    if (_lastDecodedPacketType == SAFETY_PACKET) return safetyPacketData.lng;
-    return 0;
-}
-
 float packet::getSpeed() {
     return safetyPacketData.speed;
 }
@@ -182,4 +174,16 @@ float packet::getCourse() {
 
 uint8_t packet::getAdvertiseID() {
     return advertisePacketData.ID;
+}
+
+float packet::getLat() {
+    return (float)safetyPacketData.lat / 1000000.0;
+}
+
+float packet::getLng() {
+    return (float)safetyPacketData.lng / 1000000.0;
+}
+
+float packet::getHdop() {
+    return safetyPacketData.hdop;
 }

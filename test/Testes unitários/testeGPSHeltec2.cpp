@@ -4,7 +4,6 @@
 
 #include "LoRaBoards.h"
 #include "DeviceBase.h"
-#include "vehicleDevice.h"
 #include "PersonalDevice.h"
 
 #include <BLEDevice.h>
@@ -12,12 +11,13 @@
 #include "BLEHandle.h"
 
 #include "mainFunctions.h"
-#include "esp_system.h"   
+#include "esp_system.h"
 #include "SimpleTimer.h"
 
-VehicleDevice vehicle;
-mainFunctions MF;
+#define VGNSS_CTRL 3
 
+mainFunctions MF;
+PersonalDevice personal;
 
 SimpleTimer st(3000);
 
@@ -28,18 +28,19 @@ void setup() {
   Serial.begin(115200);
   delay(200);
 
-  setupBoards();
-  delay(300);
+  pinMode(VGNSS_CTRL,OUTPUT);
+  digitalWrite(VGNSS_CTRL,HIGH);
+  Serial1.begin(115200,SERIAL_8N1,33,34);    
+  Serial.println("GPS_test");
 
-  vehicle.setID(12);
-  vehicle.setup();
+  personal.setID(20);
+  personal.setup();
 
   randomSeed((uint32_t)esp_random() ^ (uint32_t)micros());
 }
 
 void loop() {
-  MF.SetVehicleConst(vehicle);
-  MF.ReceivePacketDevice(vehicle, st, jitterTargetTime, waitingToSend);
-  MF.SendPacketDevice(vehicle, st, jitterTargetTime, waitingToSend);
+  MF.SetPersonalConst(personal);
+  MF.ReceivePacketDevice(personal, st, jitterTargetTime, waitingToSend);
+  MF.SendPacketDevice(personal, st, jitterTargetTime, waitingToSend);
 }
-

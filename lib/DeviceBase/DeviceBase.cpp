@@ -12,8 +12,8 @@ void DeviceBase::setup() {
     lora.begin();
     lora.SpreadingFactor(7);
     lora.receiveData(receivedPacket, 0, 0);
-    this->forceLatitude(-19.967605);
-    this->forceLongitude(-43.955403);
+    this->forceLatitude(-19.967639);
+    this->forceLongitude(-43.955408);
 }
 
 void DeviceBase::alimentandoGPS() {
@@ -55,7 +55,7 @@ void DeviceBase::sendSafety() {
     double currentSpeed = (deviceType == 1) ? speed : 0.0;
     double currentCourse = (deviceType == 1) ? deviceCourse : 0.0;
 
-    pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket, currentSpeed, currentCourse);
+    pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude, safetyPacket, currentSpeed, currentCourse, deviceHdop);
 
     lora.sendData(safetyPacket, SAFETY_PACKET_SIZE);
 }
@@ -71,7 +71,7 @@ bool DeviceBase::receive() {
         uint8_t result = pckt.decodePacket(receivedPacket, this->deviceType);
         
         if (result == 0) {
-            return false; 
+            return false;
         }
 
         onReceiveDecoded();

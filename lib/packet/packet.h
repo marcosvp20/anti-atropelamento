@@ -20,6 +20,7 @@ struct __attribute__((packed)) SafetyPayload {
     uint8_t deviceType;
     int32_t lat;
     int32_t lng;
+    uint8_t hdop;
     uint8_t speed;
     uint8_t course;
 };
@@ -61,6 +62,7 @@ struct SafetyData {
     uint8_t deviceType;
     int32_t lat;
     int32_t lng;
+    float hdop;
     float speed;
     float course;
 };
@@ -96,7 +98,7 @@ public:
     float mapUint8ToFloat(uint8_t value);
 
     // Construtores (TX)
-    void safetyPacket(uint8_t ID, uint8_t deviceType, double latitude, double longitude, uint8_t *returnPacket, double speed, double course);
+    void safetyPacket(uint8_t ID, uint8_t deviceType, double latitude,  double longitude, uint8_t *returnPacket, double speed, double course, double hdop);
     void monitoringPacket(uint8_t ID,  uint8_t deviceType, double latitude, double longitude, uint8_t batteryLevel, int32_t last5positions[5][2], uint8_t last5events[5], uint8_t status, uint8_t *returnPacket);
     void advertisePacket(uint8_t ID, uint8_t deviceID, uint8_t *returnPacket);
 
@@ -107,11 +109,13 @@ public:
     uint8_t getPacketID();
     uint8_t getDeviceID(); 
     uint8_t getDeviceType();
-    int32_t getLat();
-    int32_t getLng();
     float getSpeed();
     float getCourse();
     uint8_t getAdvertiseID();
+
+    float getLat();
+    float getLng();
+    float getHdop();
 };
 
 #endif

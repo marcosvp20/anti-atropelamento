@@ -16,7 +16,7 @@ VehicleDevice::VehicleDevice() : DeviceBase() {
 void VehicleDevice::buildSafetyPacket() {
     // com speed e course
     pckt.safetyPacket(deviceID, deviceType, deviceLatitude, deviceLongitude,
-                     safetyPacket, speed, deviceCourse);
+                     safetyPacket, speed, deviceCourse, deviceHdop);
 }
 
 void VehicleDevice::buildMonitoringPacket() {
@@ -27,8 +27,10 @@ void VehicleDevice::buildMonitoringPacket() {
 void VehicleDevice::onReceiveDecoded() {
     Serial.println("Received Packet:");
     Serial.print("ID: "); Serial.println(pckt.getDeviceID());
-    Serial.print("Latitude: "); Serial.println(pckt.getLat(), 6);
-    Serial.print("Longitude: "); Serial.println(pckt.getLng(), 6);
+    Serial.print("Latitude: "); Serial.println(pckt.getLat());
+    Serial.print("Longitude: "); Serial.println(pckt.getLng());
+    Serial.print("Hdop: "); Serial.println(pckt.getHdop());
+    Serial.print("\n");
 }
 
 void VehicleDevice::buildDynamicBubble360(
