@@ -24,9 +24,11 @@ public:
 
     double getLatitude() const;
     void setLatitude();
+    void forceLatitude(double lat);
 
     double getLongitude() const;
     void setLongitude();
+    void forceLongitude(double lng);
 
     double getSpeed() const;
     void setSpeed();

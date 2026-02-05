@@ -13,6 +13,13 @@ void PersonalDevice::buildMonitoringPacket() {
                           batteryLevel, last5positions, last5events, status, monitoringPacket);
 }
 
+void PersonalDevice::onReceiveDecoded() {
+    Serial.println("Received Packet:");
+    Serial.print("ID: "); Serial.println(pckt.getDeviceID());
+    Serial.print("Latitude: "); Serial.println(pckt.getLat(), 6);
+    Serial.print("Longitude: "); Serial.println(pckt.getLng(), 6);
+}
+
 int PersonalDevice::isValidSend(float targetLat, float targetLng) {
 
   const uint32_t RESET_MS = 5000;

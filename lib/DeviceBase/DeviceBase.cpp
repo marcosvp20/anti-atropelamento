@@ -12,6 +12,8 @@ void DeviceBase::setup() {
     lora.begin();
     lora.SpreadingFactor(7);
     lora.receiveData(receivedPacket, 0, 0);
+    this->forceLatitude(-19.967605);
+    this->forceLongitude(-43.955403);
 }
 
 void DeviceBase::alimentandoGPS() {
@@ -25,9 +27,11 @@ void DeviceBase::setID(uint8_t id) { deviceID = id; }
 
 double DeviceBase::getLatitude() const { return deviceLatitude; }
 void DeviceBase::setLatitude() { deviceLatitude = gps.location.lat(); }
+void DeviceBase::forceLatitude(double lat) { deviceLatitude = lat; }
 
 double DeviceBase::getLongitude() const { return deviceLongitude; }
 void DeviceBase::setLongitude() { deviceLongitude = gps.location.lng(); }
+void DeviceBase::forceLongitude(double lng) { deviceLongitude = lng; }
 
 double DeviceBase::getSpeed() const { return speed; }
 void DeviceBase::setSpeed() { speed = gps.speed.kmph(); }

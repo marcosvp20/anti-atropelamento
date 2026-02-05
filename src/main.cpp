@@ -37,32 +37,8 @@ void setup() {
 }
 
 void loop() {
-  //MF.SetVehicleConst(vehicle);
-
-  // ===================== RX sempre =====================
-  if (vehicle.receive()) {
-    uint8_t srcId = vehicle.getReceivedID();
-    Serial.println("Pacote recebido. Device ID: " + String(srcId));
-    Serial.println();
-  }
-
-  if (st.isReady() && !waitingToSend) {
-    st.reset(); 
-
-    long jitter = random(0, 201);
-    jitterTargetTime = millis() + jitter; 
-    waitingToSend = true; 
-  }
-
-  // ===================== TX slot =====================
-  if (waitingToSend && millis() >= jitterTargetTime) {
-    if (!vehicle.isChannelBusy(SAFETY_CHANNEL)) {
-    vehicle.sendSafety();
-    Serial.println("Pacote enviado");
-    Serial.println("Device ID: " + String(vehicle.getID()));
-    Serial.println();
-
-    waitingToSend = false; 
-    }
-  }
+  MF.SetVehicleConst(vehicle);
+  MF.ReceivePacketDevice(vehicle, st, jitterTargetTime, waitingToSend);
+  MF.SendPacketDevice(vehicle, st, jitterTargetTime, waitingToSend);
 }
+
