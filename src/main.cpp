@@ -31,6 +31,8 @@ void setup() {
   Serial.begin(115200);
   delay(200);
 
+  Serial.println("Iniciando dispositivo pessoal...");
+
   setupBoards();
   delay(300);
 
