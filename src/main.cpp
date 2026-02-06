@@ -39,6 +39,8 @@ void setup() {
   personal.setID(12);
   personal.setup();
 
+  Serial.println("Japa");
+
   randomSeed((uint32_t)esp_random() ^ (uint32_t)micros());
 }
 

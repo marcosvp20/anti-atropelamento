@@ -83,14 +83,16 @@ void loop() {
 
   static int lastLevel = -1;
   if (level != lastLevel) {
-    if (level == 1) safetyTimer.setInterval(1000);
-    else if (level == 2) safetyTimer.setInterval(5000);
+    if (level == 1) safetyTimer.setInterval(3000);
+    else if (level == 2) safetyTimer.setInterval(10000);
+    else if (level == 3) safetyTimer.setInterval(120000);
     safetyTimer.reset();
     lastLevel = level;
+    Serial.println("Nível de alerta atualizado: " + String(level));
   }
 
 
-  if ((level == 1 || level == 2) && safetyTimer.isReady()) {
+  if ((level != -1) && safetyTimer.isReady()) {
 
     if (personal.hasLocation() && !vehicle.isChannelBusy(SAFETY_CHANNEL)) {
       vehicle.sendSafety();  
