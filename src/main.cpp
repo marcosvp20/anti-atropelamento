@@ -45,5 +45,6 @@ void loop() {
   MF.ReceivePacketDevice(personal, st, jitterTargetTime, waitingToSend, hasTarget);
   MF.SendTime(personal, st, hasTarget, level, lastLevel);
   MF.SendPacketDevice(personal, st, jitterTargetTime, waitingToSend);
+  personal.cleanOldVehicles();
 }
 

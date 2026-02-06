@@ -7,6 +7,10 @@ DEVICE MAIN FUNCTIONS
 void mainFunctions::ReceivePacketDevice(DeviceBase& device, SimpleTimer& st, unsigned long& jitterTargetTime, bool& waitingToSend, bool& hasTarget) {
   if (device.receive()) {
     uint8_t srcId = device.getReceivedID();
+    double srcLat = device.getReceivedLat();
+    double srcLng = device.getReceivedLng();
+
+    this->ProcessData((PersonalDevice&) device, srcId, srcLat, srcLng);
     hasTarget = true;
   }else {
     hasTarget = false;
@@ -88,11 +92,14 @@ void mainFunctions::SetPersonalConst(PersonalDevice& personal) {
 }
 
 void mainFunctions::SendTime(PersonalDevice& personal, SimpleTimer& st, bool& hasTarget, int& level, int& lastLevel) {
+ double minDistance = personal.minDistanceFromVehicle();
+
+ Serial.println("Minimum distance from vehicle: " + String(minDistance) + " meters");
+
   if (hasTarget) {
-    level = personal.isValidSend(personal.getReceivedLat(), personal.getReceivedLng()); 
+    level = personal.isValidSend(minDistance); 
   }
 
-  
   if (level != lastLevel) {
     if (level == 1) st.setInterval(3000);
     else if (level == 2) st.setInterval(10000);
@@ -102,5 +109,9 @@ void mainFunctions::SendTime(PersonalDevice& personal, SimpleTimer& st, bool& ha
     Serial.println("Level: " + String(lastLevel));
     Serial.println("Nível de alerta atualizado: " + String(level));
   }
-  
 }
+
+void mainFunctions::ProcessData(PersonalDevice& personal, uint8_t id, double srcLat, double srcLng) {
+    double dist = personal.calculateDistance(srcLat, srcLng);
+    personal.updateVehicleList(id, dist);
+};

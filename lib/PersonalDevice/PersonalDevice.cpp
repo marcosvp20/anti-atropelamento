@@ -20,22 +20,7 @@ void PersonalDevice::onReceiveDecoded() {
     Serial.print("Longitude: "); Serial.println(pckt.getLng(), 6);
 }
 
-int PersonalDevice::isValidSend(float targetLat, float targetLng) {
-
-  const uint32_t RESET_MS = 5000;
-  uint32_t agora = millis();
-  if (agora - lastMinResetMs >= RESET_MS) {
-    minDistance = 1e5;
-    lastMinResetMs = agora;
-  }
-
-  float distance = calculateDistance(targetLat, targetLng);
-
-  Serial.println("Distance to target: " + String(distance) + " meters");
-
-  if (distance < minDistance) {
-    minDistance = distance;
-  }
+int PersonalDevice::isValidSend(double minDistance) {
 
   if (minDistance < 5.0f) {
     return 1;
@@ -45,3 +30,49 @@ int PersonalDevice::isValidSend(float targetLat, float targetLng) {
     return 3;
   }
 }
+
+
+void PersonalDevice::updateVehicleList(uint8_t id, double dist) {
+    int firstEmptyIndex = -1;
+    bool found = false;
+
+    for (int i = 0; i < MAX_VEHICLES; i++) {
+        if (nearbyVehicles[i].id == id) {
+            nearbyVehicles[i].distance = dist;
+            nearbyVehicles[i].lastSeenMs = millis();
+            found = true;
+            break;
+        }
+
+        if (firstEmptyIndex == -1 && (nearbyVehicles[i].id == 0)) {
+            firstEmptyIndex = i;
+        }
+    }
+
+    if (!found && firstEmptyIndex != -1) {
+        nearbyVehicles[firstEmptyIndex].id = id;
+        nearbyVehicles[firstEmptyIndex].distance = dist;
+        nearbyVehicles[firstEmptyIndex].lastSeenMs = millis();
+    }
+}
+
+void PersonalDevice::cleanOldVehicles() {
+    uint32_t now = millis();
+    for (int i = 0; i < MAX_VEHICLES; i++) {
+        if (nearbyVehicles[i].id != 0 && (now - nearbyVehicles[i].lastSeenMs > 12000)) {
+            nearbyVehicles[i].id = 0; 
+            nearbyVehicles[i].distance = 0.0;
+            nearbyVehicles[i].lastSeenMs = 0;
+        }
+    }
+}
+
+double PersonalDevice::minDistanceFromVehicle() {
+  double minDistanceVehicle = 1000000.0;
+  for (int i = 0; i < MAX_VEHICLES; i++) {
+    if (nearbyVehicles[i].id != 0 && nearbyVehicles[i].distance < minDistanceVehicle) {
+      minDistanceVehicle = nearbyVehicles[i].distance;
+    }
+  }
+  return minDistanceVehicle;
+};
