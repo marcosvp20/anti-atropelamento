@@ -31,18 +31,11 @@ void setup() {
   Serial.begin(115200);
   delay(200);
 
-  Serial.println("Iniciando dispositivo pessoal...");
-
-  Serial.println("**********************************");
-
   setupBoards();
   delay(300);
 
   personal.setID(12);
   personal.setup();
-
-  Serial.println("Japa");
-  Serial.println("############################");
 
   randomSeed((uint32_t)esp_random() ^ (uint32_t)micros());
 }
