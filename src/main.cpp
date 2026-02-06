@@ -31,6 +31,8 @@ void setup() {
   Serial.begin(115200);
   delay(200);
 
+  Serial.println("**********************************");
+
   setupBoards();
   delay(300);
 
