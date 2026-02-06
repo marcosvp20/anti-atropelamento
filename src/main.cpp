@@ -40,6 +40,7 @@ void setup() {
   personal.setup();
 
   Serial.println("Japa");
+  Serial.println("############################");
 
   randomSeed((uint32_t)esp_random() ^ (uint32_t)micros());
 }
