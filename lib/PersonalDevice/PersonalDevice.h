@@ -22,7 +22,7 @@ public:
 
     void updateVehicleList(uint8_t id, double dist);
     void cleanOldVehicles();
-    double PersonalDevice::minDistanceFromVehicle() {};
+    double minDistanceFromVehicle();
 
 protected:
     void buildSafetyPacket() override;
