@@ -4,9 +4,12 @@
 DEVICE MAIN FUNCTIONS
 ########################## */
 
-void mainFunctions::ReceivePacketDevice(DeviceBase& device, SimpleTimer& st, unsigned long& jitterTargetTime, bool& waitingToSend) {
+void mainFunctions::ReceivePacketDevice(DeviceBase& device, SimpleTimer& st, unsigned long& jitterTargetTime, bool& waitingToSend, bool& hasTarget) {
   if (device.receive()) {
     uint8_t srcId = device.getReceivedID();
+    hasTarget = true;
+  }else {
+    hasTarget = false;
   }
 
   if (st.isReady() && !waitingToSend) {
@@ -82,4 +85,22 @@ void mainFunctions::SetPersonalConst(PersonalDevice& personal) {
     personal.setLongitude();
     personal.setRadius(personal.getHdop());
   }
+}
+
+void mainFunctions::SendTime(PersonalDevice& personal, SimpleTimer& st, bool& hasTarget, int& level, int& lastLevel) {
+  if (hasTarget) {
+    level = personal.isValidSend(personal.getReceivedLat(), personal.getReceivedLng()); 
+  }
+
+  
+  if (level != lastLevel) {
+    if (level == 1) st.setInterval(3000);
+    else if (level == 2) st.setInterval(10000);
+    else if (level == 3) st.setInterval(20000);
+    st.reset();
+    lastLevel = level;
+    Serial.println("Level: " + String(lastLevel));
+    Serial.println("Nível de alerta atualizado: " + String(level));
+  }
+  
 }

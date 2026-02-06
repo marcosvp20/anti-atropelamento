@@ -15,7 +15,7 @@
 #include "esp_system.h"   
 #include "SimpleTimer.h"
 
-VehicleDevice vehicle;
+PersonalDevice personal;
 mainFunctions MF;
 
 
@@ -23,6 +23,9 @@ SimpleTimer st(3000);
 
 unsigned long jitterTargetTime = 0;
 bool waitingToSend = false;
+bool hasTarget = false;
+int level = 3;
+static int lastLevel = -1;
 
 void setup() {
   Serial.begin(115200);
@@ -31,15 +34,16 @@ void setup() {
   setupBoards();
   delay(300);
 
-  vehicle.setID(12);
-  vehicle.setup();
+  personal.setID(12);
+  personal.setup();
 
   randomSeed((uint32_t)esp_random() ^ (uint32_t)micros());
 }
 
 void loop() {
-  MF.SetVehicleConst(vehicle);
-  MF.ReceivePacketDevice(vehicle, st, jitterTargetTime, waitingToSend);
-  MF.SendPacketDevice(vehicle, st, jitterTargetTime, waitingToSend);
+  MF.SetPersonalConst(personal);
+  MF.ReceivePacketDevice(personal, st, jitterTargetTime, waitingToSend, hasTarget);
+  MF.SendTime(personal, st, hasTarget, level, lastLevel);
+  MF.SendPacketDevice(personal, st, jitterTargetTime, waitingToSend);
 }
 

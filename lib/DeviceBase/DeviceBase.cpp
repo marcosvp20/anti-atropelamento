@@ -12,8 +12,6 @@ void DeviceBase::setup() {
     lora.begin();
     lora.SpreadingFactor(7);
     lora.receiveData(receivedPacket, 0, 0);
-    this->forceLatitude(-19.967639);
-    this->forceLongitude(-43.955408);
 }
 
 void DeviceBase::alimentandoGPS() {
@@ -107,7 +105,10 @@ void DeviceBase::updateFromBluetooth(String rawData) {
     }
 }
 
-float DeviceBase::calculateDistance(float targetLat, float targetLng) {
+float DeviceBase::calculateDistance(double targetLat, double targetLng) {
+    Serial.println("Calculating distance to target...");
+    Serial.println("Current Location: Lat " + String(deviceLatitude, 6) + ", Lng " + String(deviceLongitude, 6));
+    Serial.println("Target Location: Lat " + String(targetLat, 6) + ", Lng " + String(targetLng, 6));
     return gps.distanceBetween(deviceLatitude, deviceLongitude, targetLat, targetLng);
 }
 
@@ -152,12 +153,12 @@ bool DeviceBase::hasLocation() {
     return gps.location.isValid();
 }
 
-float DeviceBase::getReceivedLat() {
-    return pckt.getLat() / 1000000.0; 
+double DeviceBase::getReceivedLat() {
+    return pckt.getLat(); 
 }
 
-float DeviceBase::getReceivedLng() {
-    return pckt.getLng() / 1000000.0; 
+double DeviceBase::getReceivedLng() {
+    return pckt.getLng(); 
 }
 
 uint8_t DeviceBase::getReceivedID() {

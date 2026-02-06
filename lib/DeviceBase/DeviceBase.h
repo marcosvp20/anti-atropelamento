@@ -44,7 +44,7 @@ public:
 
     void updateFromBluetooth(String rawData);
 
-    float calculateDistance(float targetLat, float targetLng);
+    float calculateDistance(double targetLat, double targetLng);
 
     void sendAlert(uint8_t alertType, uint8_t targetID);
 
@@ -60,8 +60,8 @@ public:
 
     bool hasLocation();
 
-    float getReceivedLat();
-    float getReceivedLng();
+    double getReceivedLat();
+    double getReceivedLng();
 
     uint8_t getReceivedID();
 

@@ -25,19 +25,21 @@ int PersonalDevice::isValidSend(float targetLat, float targetLng) {
   const uint32_t RESET_MS = 5000;
   uint32_t agora = millis();
   if (agora - lastMinResetMs >= RESET_MS) {
-    minDistance = 1e9;
+    minDistance = 1e5;
     lastMinResetMs = agora;
   }
 
   float distance = calculateDistance(targetLat, targetLng);
 
+  Serial.println("Distance to target: " + String(distance) + " meters");
+
   if (distance < minDistance) {
     minDistance = distance;
   }
 
-  if (minDistance < 30.0f) {
+  if (minDistance < 5.0f) {
     return 1;
-  } else if (minDistance <= 50.0f) {
+  } else if (minDistance <= 10.0f) {
     return 2;
   } else {  
     return 3;
