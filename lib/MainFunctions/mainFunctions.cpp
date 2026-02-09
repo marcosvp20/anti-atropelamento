@@ -106,7 +106,7 @@ void mainFunctions::SendTime(PersonalDevice& personal, SimpleTimer& st, bool& ha
   }
 
   if (hasTarget) {
-    level = personal.isValidSend(minDistance); 
+    level = personal.isValidSend(minDistance);
   }
 
   if (level != lastLevel) {
@@ -125,3 +125,14 @@ void mainFunctions::ProcessData(PersonalDevice& personal, uint8_t id, double src
     Serial.println("Distance calculada: " + String(dist) + " meters");
     personal.updateVehicleList(id, dist);
 };
+
+void mainFunctions::ActiveAlert(PersonalDevice& personal) {
+  double minDistance = personal.minDistanceFromVehicle();
+  if (minDistance < personal.getRadius(1) - personal.getRadius(0)) {
+    Serial.println("ALERTA: Veículo muito próximo!");
+  } else if (minDistance < personal.getRadius(2) - personal.getRadius(1)) {
+    Serial.println("ALERTA: Veículo próximo!");
+  } else if (minDistance < 30.0) {
+    Serial.println("ALERTA: Veículo na área!");
+  }
+}

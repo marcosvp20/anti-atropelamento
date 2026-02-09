@@ -110,7 +110,7 @@ float DeviceBase::calculateDistance(double targetLat, double targetLng) {
     Serial.println("Current Location: Lat " + String(deviceLatitude, 6) + ", Lng " + String(deviceLongitude, 6));
     Serial.println("Target Location: Lat " + String(targetLat, 6) + ", Lng " + String(targetLng, 6));
     double distance = gps.distanceBetween(deviceLatitude, deviceLongitude, targetLat, targetLng);
-    return (distance - getRadius(2));
+    return (distance - getRadius(1));
 }
 
 void DeviceBase::sendAlert(uint8_t alertType, uint8_t targetID) {
