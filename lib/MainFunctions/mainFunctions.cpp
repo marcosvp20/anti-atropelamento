@@ -27,7 +27,7 @@ void mainFunctions::ReceivePacketDevice(DeviceBase& device, SimpleTimer& st, uns
 
 void mainFunctions::SendPacketDevice(DeviceBase& device, SimpleTimer& st, unsigned long& jitterTargetTime, bool& waitingToSend) {
   if (waitingToSend && millis() >= jitterTargetTime) {
-    if (!device.isChannelBusy(SAFETY_CHANNEL)) {
+    if (!device.isChannelBusy(SAFETY_CHANNEL)&hasFixSimplePersonal((PersonalDevice&) device)) {
     device.sendSafety();
     Serial.println("\n");
     Serial.println("###########################");
