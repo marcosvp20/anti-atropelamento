@@ -94,7 +94,16 @@ void mainFunctions::SetPersonalConst(PersonalDevice& personal) {
 void mainFunctions::SendTime(PersonalDevice& personal, SimpleTimer& st, bool& hasTarget, int& level, int& lastLevel) {
  double minDistance = personal.minDistanceFromVehicle();
 
- Serial.println("Minimum distance from vehicle: " + String(minDistance) + " meters");
+ static uint32_t lasttime = 0; 
+  uint32_t now = millis();
+
+  if (now - lasttime >= 1000) {
+      Serial.print("Minimum distance from vehicle: ");
+      Serial.print(minDistance);
+      Serial.println(" meters");
+      
+      lasttime = now;
+  }
 
   if (hasTarget) {
     level = personal.isValidSend(minDistance); 
@@ -113,5 +122,6 @@ void mainFunctions::SendTime(PersonalDevice& personal, SimpleTimer& st, bool& ha
 
 void mainFunctions::ProcessData(PersonalDevice& personal, uint8_t id, double srcLat, double srcLng) {
     double dist = personal.calculateDistance(srcLat, srcLng);
+    Serial.println("Distance calculada: " + String(dist) + " meters");
     personal.updateVehicleList(id, dist);
 };
