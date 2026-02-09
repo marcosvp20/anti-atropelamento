@@ -25,9 +25,13 @@ void mainFunctions::ReceivePacketDevice(DeviceBase& device, SimpleTimer& st, uns
   }
 }
 
+static inline bool hasFixSimplePersonal(PersonalDevice& personal) {
+  return personal.hasLocation() && personal.getSatValid() && personal.getHdop() <= 10.0;
+}
+
 void mainFunctions::SendPacketDevice(DeviceBase& device, SimpleTimer& st, unsigned long& jitterTargetTime, bool& waitingToSend) {
   if (waitingToSend && millis() >= jitterTargetTime) {
-    if (!device.isChannelBusy(SAFETY_CHANNEL)&hasFixSimplePersonal((PersonalDevice&) device)) {
+    if (!device.isChannelBusy(SAFETY_CHANNEL) && hasFixSimplePersonal((PersonalDevice&) device)) {
     device.sendSafety();
     Serial.println("\n");
     Serial.println("###########################");
@@ -72,10 +76,6 @@ void mainFunctions::SetVehicleConst(VehicleDevice& vehicle) {
 /* ##########################
 PERSONAL MAIN FUNCTIONS
 ########################## */
-
-static inline bool hasFixSimplePersonal(PersonalDevice& personal) {
-  return personal.hasLocation() && personal.getSatValid() && personal.getHdop() <= 2.0;
-}
 
 void mainFunctions::SetPersonalConst(PersonalDevice& personal) {
   personal.alimentandoGPS();
